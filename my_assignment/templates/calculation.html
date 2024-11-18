@@ -1,1 +1,10 @@
 <!DOCTYPE html>
+{% extends 'base.html' %}
+
+{% block user_name %}
+<b>{{ user.name }}</b>
+{% endblock %}
+
+{% block content %}
+<b>This is the calculation page</b>
+{% endblock %}

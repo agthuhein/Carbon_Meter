@@ -62,5 +62,21 @@ def logout():
     session.pop('password', None)
     return redirect(url_for('index'))
 
+###route company page
+@app.route('/company_list')
+def company_list():
+    if session['name']:
+        with app.app_context():
+            user = User.query.filter_by(email = session['email']).first()
+        return render_template('company_list.html', user=user)
+    
+###route company page
+@app.route('/calculation')
+def calculation():
+    if session['name']:
+        with app.app_context():
+            user = User.query.filter_by(email = session['email']).first()
+        return render_template('calculation.html', user=user)
+
 if __name__ == "__main__":
     app.run(debug=True)
