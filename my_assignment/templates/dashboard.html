@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 {% extends 'base.html' %}
 
+{% block user_name %}
+<b>{{ user.name }}</b>
+{% endblock %}
+
 {% block content %}
 <h1 class="mt-4">Dashboard</h1>
 <ol class="breadcrumb mb-4">

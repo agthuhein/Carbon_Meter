@@ -42,14 +42,25 @@ def register():
 
 @app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
-    return render_template('dashboard.html')
+    if session['name']:
+        with app.app_context():
+            user = User.query.filter_by(email = session['email']).first()
+        return render_template('dashboard.html', user=user)
+
+
+    #return redirect('index.html')
     '''
         if session['name']:
         return render_template('dashboard.html')
     else:
         return redirect(url_for('index'))
     '''
-
+@app.route('/logout')
+def logout():
+    session.pop('email', None)
+    session.pop('name', None)
+    session.pop('password', None)
+    return redirect(url_for('index'))
 
 if __name__ == "__main__":
     app.run(debug=True)
