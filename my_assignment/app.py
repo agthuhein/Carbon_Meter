@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template, redirect, url_for, session
-from model import db, app, User
+from model import db, app, User, Company
 
 ###Views###
 @app.route('/', methods=['GET','POST'])
@@ -79,12 +79,29 @@ def calculation():
         return render_template('calculation.html', user=user)
     
 ###route add company page
-@app.route('/add_company')
+@app.route('/add_company', methods=['GET','POST'])
 def add_company():
     if session['name']:
         with app.app_context():
             user = User.query.filter_by(email = session['email']).first()
-        return render_template('add_company.html', user=user)
+
+    if request.method == 'POST':
+        name = request.form['name']
+        address = request.form['address']
+        sector = request.form['sector']
+        contact_person = request.form['c_person']
+        email = request.form['email']
+        postal_code = request.form['postalcode']
+
+        with app.app_context():
+            new_company = Company(name=name, address=address, sector=sector, contact_person=contact_person, email=email, postal_code=postal_code)
+
+            db.session.add(new_company)
+            db.session.commit()
+        
+        return redirect(url_for('company_list'))
+    
+    return render_template('add_company.html', user=user)
     
 ###route about page
 @app.route('/about')

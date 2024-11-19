@@ -43,20 +43,47 @@ class Company(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    country = db.Column(db.String(100), nullable=False)
+    address = db.Column(db.String(100), nullable=False)
     sector = db.Column(db.String(100), nullable=False)
     contact_person = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True)
     postal_code = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, name, country, sector, contact_person, email, postal_code):
+    #one to many relationship
+    usage = db.relationship('Usage', backref='companies')
+
+    def __init__(self, name, address, sector, contact_person, email, postal_code):
         self.name = name
-        self.country = country
+        self.address = address
         self.sector = sector
         self.contact_person = contact_person
         self.email = email
         self.postal_code = postal_code
 
+#Usage model
+class Usage(db.Model):
+    
+    __tablename__ = 'usage'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    energy = db.Column(db.Float, nullable=False)
+    waste = db.Column(db.Float, nullable=False)
+    fuel = db.Column(db.Float, nullable=False)
+    result = db.Column(db.Float, nullable=False)
+    month = db.Column(db.Integer, nullable=True)
+    year = db.Column(db.Integer, nullable=False)
+
+    #foreign key
+    company_id = db.Column(db.Integer, db.ForeignKey('companies.id'))
+
+    def __init__(self, energy, waste, fuel, result, month, year, company_id):
+        self.energy = energy
+        self.waste = waste
+        self.fuel = fuel
+        self.result = result
+        self.month = month
+        self.year = year
+        self.company_id = company_id
 
 with app.app_context():
     db.create_all()
