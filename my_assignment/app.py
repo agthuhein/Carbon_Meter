@@ -1,6 +1,5 @@
 from flask import Flask, request, render_template, redirect, url_for, session
 from model import db, app, User, Company
-from flask_socketio import SocketIO
 
 socketio = SocketIO(app)
 ###Views###
