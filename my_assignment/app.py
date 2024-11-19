@@ -78,13 +78,21 @@ def calculation():
             user = User.query.filter_by(email = session['email']).first()
         return render_template('calculation.html', user=user)
     
-###route calculation page
+###route add company page
 @app.route('/add_company')
 def add_company():
     if session['name']:
         with app.app_context():
             user = User.query.filter_by(email = session['email']).first()
         return render_template('add_company.html', user=user)
+    
+###route about page
+@app.route('/about')
+def about():
+    if session['name']:
+        with app.app_context():
+            user = User.query.filter_by(email = session['email']).first()
+        return render_template('about.html', user=user)
 
 if __name__ == "__main__":
     app.run(debug=True)

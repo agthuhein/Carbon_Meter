@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+
+{% block user_name %}
+<b>{{ user.name }}</b>
+{% endblock %}
+
+{% block content %}
+
+<h1 class="mt-4" style="margin-bottom: 20px;">About me!</h1>
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fa fa-plus-circle" style="margin-right: 10px;"></i>
+        Usage
+    </div>
+    <div class="container">
+        <div class="container-fluid">
+          <p style="margin-top: 30px;margin-bottom: 30px;text-align:justify;">
+            The <b>Carbon Meter</b> web application is designed to help organizations calculate and track the carbon footprint of various companies on a monthly basis. This tool allows users to input data for different companies, enabling them to generate comprehensive carbon footprint reports. The application offers the unique ability to compare the carbon emissions of multiple companies over different time periods, such as 3 months, 6 months, and 12 months, providing valuable insights into emission trends and performance. Users can also add new companies to the system for fresh calculations and comparisons, making it a dynamic and scalable solution for organizations focused on environmental impact assessment. With the ability to generate detailed reports, the application empowers users to make informed decisions, identify areas for improvement, and drive sustainability efforts within their own operations and beyond.
+          </p>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
