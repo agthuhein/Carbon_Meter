@@ -1,6 +1,8 @@
 from flask import Flask, request, render_template, redirect, url_for, session
 from model import db, app, User, Company
+from flask_socketio import SocketIO
 
+socketio = SocketIO(app)
 ###Views###
 @app.route('/', methods=['GET','POST'])
 def index():
@@ -73,20 +75,54 @@ def company_list():
             companies = Company.query.all()
     
         return render_template('company_list.html', user=user, companies=companies)
-    
+
 ###route calculation page
 @app.route('/calculation', methods=['GET','POST'])
 def calculation():
+
+    result = 0
+    e_bill = 0.0
+
     if session['name'] and request.method == 'GET':
         with app.app_context():
             user = User.query.filter_by(email = session['email']).first()
             companies = Company.query.all()
-    
+
     if request.method == 'POST':
-        pass
+
+        type = request.form['formSelector']
+
+        month = request.form['month']
+        year = request.form['year']
+
+        #companyid
+        company_id = int(request.form['company'])
+
+        #for energy usage
+        e_bill = round(float(request.form['e_bill']),2)
+        g_bill = round(float(request.form['g_bill']),2)
+        f_bill = round(float(request.form['f_bill']),2)
+
+        #for waste
+        gen_waste = request.form['gen_waste']
+        rec_waste = request.form['rec_waste']
+
+        #for travel
+        b_travel = request.form['b_travel']
+        fuel_eff = request.form['fuel_eff']
+
+        if type == 'energyusage':
+            result = (e_bill) * 12 * 0.0005 + (g_bill) * 12 * 0.0053 + (f_bill) * 12 * 2.32
+            session['result'] = {'result':result}
+            return redirect(url_for('calculation'))
+        elif type == 'waste':
+            pass
+        else:
+            pass
 
     return render_template('calculation.html', user=user, companies=companies)
-    
+
+
 ###route add company page
 @app.route('/add_company', methods=['GET','POST'])
 def add_company():
