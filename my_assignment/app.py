@@ -68,15 +68,24 @@ def company_list():
     if session['name']:
         with app.app_context():
             user = User.query.filter_by(email = session['email']).first()
-        return render_template('company_list.html', user=user)
+        
+        with app.app_context():
+            companies = Company.query.all()
+    
+        return render_template('company_list.html', user=user, companies=companies)
     
 ###route calculation page
-@app.route('/calculation')
+@app.route('/calculation', methods=['GET','POST'])
 def calculation():
-    if session['name']:
+    if session['name'] and request.method == 'GET':
         with app.app_context():
             user = User.query.filter_by(email = session['email']).first()
-        return render_template('calculation.html', user=user)
+            companies = Company.query.all()
+    
+    if request.method == 'POST':
+        pass
+
+    return render_template('calculation.html', user=user, companies=companies)
     
 ###route add company page
 @app.route('/add_company', methods=['GET','POST'])

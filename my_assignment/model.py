@@ -47,7 +47,7 @@ class Company(db.Model):
     sector = db.Column(db.String(100), nullable=False)
     contact_person = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True)
-    postal_code = db.Column(db.Integer, nullable=False)
+    postal_code = db.Column(db.String(20), nullable=False)
 
     #one to many relationship
     usage = db.relationship('Usage', backref='companies')

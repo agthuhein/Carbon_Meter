@@ -9,7 +9,7 @@
 <h1 class="mt-4" style="margin-bottom: 20px;">Calculate</h1>
 
 <div class="row">
-  <div class="col-lg-7">
+  <div class="col-lg-12">
     <div class="card mb-4">
       <div class="card-header">
         <i class="fas fa-calculator" style="margin-right: 5px;"></i>
@@ -36,7 +36,7 @@
                   </label>
                 </div>
                 <div class="form-row" style="margin-top: 20px;">
-                  <div class="form-group col-md-4">
+                  <div class="form-group col-md-3">
                     <label for="sector">Month</label>
                     <select name="sector" class="form-control">
                       <option selected>Choose...</option>
@@ -54,7 +54,7 @@
                       <option value="12">December</option>
                     </select>
                   </div>
-                  <div class="form-group col-md-4">
+                  <div class="form-group col-md-3">
                     <label for="sector">Year</label>
                     <select name="sector" class="form-control">
                       <option selected>Choose...</option>
@@ -67,62 +67,68 @@
                       <option value="2030">2030</option>
                     </select>
                   </div>
-                  <div class="form-group col-md-4">
+                  <div class="form-group col-md-6">
                     <label for="sector">Company</label>
                     <select name="sector" class="form-control">
                       <option selected>Choose...</option>
-                      <option value="2024">ABC</option>
+                      {% for company in companies %}
+                        <option value="{{company.name}}">{{ company.name }}</option>
+                      {% endfor %}
                     </select>
+                      <a href="/add_company"><i style="opacity: 0.7; font-size: small;">Add new</i></a>
                   </div>
-                  
                 </div>
                 <!-- Form 1 -->
-                <div id="form1" class="form">
+                <div id="form1" class="form" style="margin-top: -20px;">
                   <div class="form-row">
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-3">
                       <label for="name">Avg. monthly electricity bill <i style="opacity: 0.7;">(€)</i></label>
-                      <input type="text" class="form-control" name="name" placeholder="Enter bill">
+                      <input type="text" class="form-control" name="name" placeholder="Electricity bill">
                     </div>
-                    <div class="form-group col-md-6">
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-3">
                       <label for="email">Avg. monthly gas bill <i style="opacity: 0.7;">(€)</i></label>
-                      <input type="email" class="form-control" name="email" placeholder="Enter bill">
+                      <input type="email" class="form-control" name="email" placeholder="Gas bill">
                     </div>
                   </div>
                   <div class="form-row" style="margin-bottom: 20px;">
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-3">
                       <label for="name">Avg. monthly fuel bill <i style="opacity: 0.7;">(€)</i></label>
-                      <input type="text" class="form-control" name="name" placeholder="Enter bill">
+                      <input type="text" class="form-control" name="name" placeholder="Fuel bill">
                     </div>
 
                   </div>
                   <input type="submit" value="Submit Form 1" class="btn btn-primary btn-md">
                 </div>
+                  </div>
+
 
                 <!-- Form 2 -->
-                <div id="form2" class="form" style="display:none;">
-                  <div class="form-row" style="margin-bottom: 20px;">
-                    <div class="form-group col-md-6">
+                <div id="form2" class="form" style="display:none;margin-top: -30px;">
+                  <div class="form-row">
+                    <div class="form-group col-md-7">
                       <label for="name">Monthly Generated Waste <i style="opacity: 0.7;">(in kg)</i></label>
-                      <input type="text" class="form-control" name="name" placeholder="Enter company name">
+                      <input type="text" class="form-control" name="name" placeholder="Generated Waste">
                     </div>
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-7">
                       <label for="email">Monthly Recycled Waste <i style="opacity: 0.7;">(in %)</i></label>
-                      <input type="email" class="form-control" name="email" placeholder="Enter company email">
+                      <input type="email" class="form-control" name="email" placeholder="Recycled Waste">
                     </div>
                   </div>
                   <input type="submit" value="Submit Form 2" class="btn btn-primary btn-md">
                 </div>
 
                 <!-- Form 3 -->
-                <div id="form3" class="form" style="display:none;">
-                  <div class="form-row" style="margin-bottom: 20px;">
-                    <div class="form-group col-md-6">
-                      <label for="name">Annual Business Travel <i style="opacity: 0.7;">(km)</i></label>
-                      <input type="text" class="form-control" name="name" placeholder="Enter company name">
+                <div id="form3" class="form" style="display:none;margin-top: -30px;">
+                  <div class="form-row">
+                    <div class="form-group col-md-7">
+                      <label for="b_travel">Annual Business Travel <i style="opacity: 0.7;">(km)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i></label>
+                      <input type="text" class="form-control" name="b_travel" placeholder="Business travel">
                     </div>
-                    <div class="form-group col-md-6">
-                      <label for="email">Avg. fuel efficiency<i style="opacity: 0.7;">(L/100 km)</i></label>
-                      <input type="email" class="form-control" name="email" placeholder="Enter company email">
+                    <div class="form-group col-md-7">
+                      <label for="fuel">Avg. fuel efficiency<i style="opacity: 0.7;">(L/100 km)</i></label>
+                      <input type="text" class="form-control" name="fuel" placeholder="Fuel efficiency">
                     </div>
                   </div>
                   <input type="submit" value="Submit Form 3" class="btn btn-primary btn-md">
@@ -130,23 +136,14 @@
               </div>
 
             </div>
-
-
-
-
           </div>
 
         </div>
       </div>
     </div>
   </div>
-  <div class="col-lg-5">
-    <div class="card mb-3">
-  
-      <div class="card-body">Result: </div>
-    </div>
-  </div>
-</div>
+
+
 
 <script>
   // Function to display the corresponding form based on selected radio button
