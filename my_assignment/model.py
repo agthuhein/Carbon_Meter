@@ -47,15 +47,15 @@ class Company(db.Model):
     sector = db.Column(db.String(100), nullable=False)
     contact_person = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True)
-    zip = db.Column(db.Integer, nullable=False)
+    postal_code = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, name, country, sector, contact_person, email, zip):
+    def __init__(self, name, country, sector, contact_person, email, postal_code):
         self.name = name
         self.country = country
         self.sector = sector
         self.contact_person = contact_person
         self.email = email
-        self.zip = zip
+        self.postal_code = postal_code
 
 
 with app.app_context():
