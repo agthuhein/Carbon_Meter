@@ -6,21 +6,28 @@
 {% endblock %}
 
 {% block content %}
-<div class="card mb-4" style="margin-top: 30px;">
+<h1 class="mt-4" style="margin-bottom: 20px;">Companies</h1>
+<div class="card mb-4">
+    <div class="card-body">
+        If you want to add a new company, please click 
+        <a href="/add_company">new company</a>
+        .
+    </div>
+</div>
+<div class="card mb-4">
     <div class="card-header">
         <i class="fas fa-table me-1"></i>
         Company List
     </div>
     <div class="card-body">
-        <table id="datatablesSimple">
+        <table class="table" id="datatablesSimple">
             <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Position</th>
-                    <th>Office</th>
-                    <th>Age</th>
-                    <th>Start date</th>
-                    <th>Salary</th>
+                    <th>Contact Persion</th>
+                    <th>Email</th>
+                    <th>Sector</th>
+                    <th>Country</th>
                 </tr>
             </thead>
             <tfoot>
@@ -40,7 +47,6 @@
                     <td>Edinburgh</td>
                     <td>61</td>
                     <td>2011/04/25</td>
-                    <td>$320,800</td>
                 </tr>
                 <tr>
                     <td>Garrett Winters</td>
@@ -48,7 +54,6 @@
                     <td>Tokyo</td>
                     <td>63</td>
                     <td>2011/07/25</td>
-                    <td>$170,750</td>
                 </tr>
                 <tr>
                     <td>Ashton Cox</td>
@@ -56,7 +61,6 @@
                     <td>San Francisco</td>
                     <td>66</td>
                     <td>2009/01/12</td>
-                    <td>$86,000</td>
                 </tr>
                 <tr>
                     <td>Cedric Kelly</td>
@@ -64,7 +68,6 @@
                     <td>Edinburgh</td>
                     <td>22</td>
                     <td>2012/03/29</td>
-                    <td>$433,060</td>
                 </tr>
                 <tr>
                     <td>Airi Satou</td>
@@ -72,7 +75,6 @@
                     <td>Tokyo</td>
                     <td>33</td>
                     <td>2008/11/28</td>
-                    <td>$162,700</td>
                 </tr>
             </tbody>
         </table>
