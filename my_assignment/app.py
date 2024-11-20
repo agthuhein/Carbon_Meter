@@ -1,7 +1,6 @@
-from flask import Flask, request, render_template, redirect, url_for, session
+from flask import Flask, request, render_template, redirect, url_for, session, jsonify
 from model import db, app, User, Company
 
-socketio = SocketIO(app)
 ###Views###
 @app.route('/', methods=['GET','POST'])
 def index():
@@ -61,6 +60,7 @@ def logout():
     session.pop('email', None)
     session.pop('name', None)
     session.pop('password', None)
+    session.pop('result', None)
     return redirect(url_for('index'))
 
 ###route company page
@@ -75,52 +75,68 @@ def company_list():
     
         return render_template('company_list.html', user=user, companies=companies)
 
-###route calculation page
-@app.route('/calculation', methods=['GET','POST'])
-def calculation():
+###route energy usage calculation page
+@app.route('/cal_energyusage', methods=['GET','POST'])
+def cal_energyusage():
 
-    result = 0
-    e_bill = 0.0
-
-    if session['name'] and request.method == 'GET':
+    if session['name']:
         with app.app_context():
             user = User.query.filter_by(email = session['email']).first()
             companies = Company.query.all()
-
+    
     if request.method == 'POST':
-
-        type = request.form['formSelector']
-
         month = request.form['month']
         year = request.form['year']
+        company = request.form['company']
+        e_bill = request.form['e_bill']
+        g_bill = request.form['g_bill']
+        f_bill = request.form['f_bill']
+        result = request.form['resultFootPrint']
+        print(month)
+        print(year)
+        print(company)
+        print(e_bill)
+        print(g_bill)
+        print(f_bill)
+        print(result)
+        
+        return redirect(url_for('cal_energyusage'))
+    return render_template('cal_energyusage.html', user=user, companies=companies)
 
-        #companyid
-        company_id = int(request.form['company'])
+'''
+ with app.app_context():
+            new_company = Company(name=name, address=address, sector=sector, contact_person=contact_person, email=email, postal_code=postal_code)
 
-        #for energy usage
-        e_bill = round(float(request.form['e_bill']),2)
-        g_bill = round(float(request.form['g_bill']),2)
-        f_bill = round(float(request.form['f_bill']),2)
+            db.session.add(new_company)
+            db.session.commit()
+'''
+###route waste calculation page
+@app.route('/cal_waste', methods=['GET','POST'])
+def cal_waste():
 
-        #for waste
-        gen_waste = request.form['gen_waste']
-        rec_waste = request.form['rec_waste']
+    if session['name']:
+        with app.app_context():
+            user = User.query.filter_by(email = session['email']).first()
+            companies = Company.query.all()
+    
+    if request.method == 'POST':
+        pass
 
-        #for travel
-        b_travel = request.form['b_travel']
-        fuel_eff = request.form['fuel_eff']
+    return render_template('cal_waste.html', user=user, companies=companies)
 
-        if type == 'energyusage':
-            result = (e_bill) * 12 * 0.0005 + (g_bill) * 12 * 0.0053 + (f_bill) * 12 * 2.32
-            session['result'] = {'result':result}
-            return redirect(url_for('calculation'))
-        elif type == 'waste':
-            pass
-        else:
-            pass
+###route business travel calculation page
+@app.route('/cal_b_travel', methods=['GET','POST'])
+def cal_b_travel():
 
-    return render_template('calculation.html', user=user, companies=companies)
+    if session['name']:
+        with app.app_context():
+            user = User.query.filter_by(email = session['email']).first()
+            companies = Company.query.all()
+    
+    if request.method == 'POST':
+        pass
 
+    return render_template('cal_b_travel.html', user=user, companies=companies)
 
 ###route add company page
 @app.route('/add_company', methods=['GET','POST'])
@@ -154,6 +170,11 @@ def about():
         with app.app_context():
             user = User.query.filter_by(email = session['email']).first()
         return render_template('about.html', user=user)
+    
+@app.route('/clear_session_result', methods=['POST'])
+def clear_session_result():
+    session.pop('result', None)
+    return jsonify({"message": "Session result removed"}), 200
 
 if __name__ == "__main__":
     app.run(debug=True)

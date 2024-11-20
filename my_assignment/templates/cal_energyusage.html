@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+
+{% block user_name %}
+<b>{{ user.name }}</b>
+{% endblock %}
+
+{% block content %}
+<h1 class="mt-4">Energy Usage</h1>
+  <ol class="breadcrumb mb-sm-0" style="background-color:white;font-size: small;margin-top: -10px">
+    <li class="breadcrumb-item">Calculate</li>
+    <li class="breadcrumb-item active">Energy Usages</li>
+  </ol>
+<form method="POST">
+<div class="row" style="margin-top: 10px;">
+  <div class="col-lg-8">
+    <div class="card mb-3">
+      <div class="card-header">
+        <i class="fas fa-calculator" style="margin-right: 5px;"></i>
+      </div>
+      <div class="card-body">
+        <div class="container">
+          <div class="container-fluid">
+ 
+              <div class="form-row">
+                <div class="form-group col-md-12">
+                  <!--start-->
+                    <div class="form-row">
+                      <div class="form-group col-md-3">
+                        <label for="month">Month</label>
+                        <select name="month" class="form-control">
+                        <option selected>Choose...</option>
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                      </select>
+                      </div>
+
+                      <div class="form-group col-md-3">
+                        <label for="year">Year</label>
+                        <select name="year" class="form-control">
+                          <option selected>Choose...</option>
+                          <option value="2024">2024</option>
+                          <option value="2025">2025</option>
+                          <option value="2026">2026</option>
+                          <option value="2027">2027</option>
+                          <option value="2028">2028</option>
+                          <option value="2029">2029</option>
+                          <option value="2030">2030</option>
+                        </select>
+                      </div>
+
+                      <div class="form-group col-md-6">
+                        <label for="company">Company</label>
+                        <select name="company" class="form-control">
+                        <option selected>Choose...</option>
+                          {% for company in companies %}
+                            <option value="{{company.id}}">{{ company.name }}</option>
+                          {% endfor %}
+                        </select>
+                          <a href="/add_company"><i style="opacity: 0.7; font-size: small;">Add new</i></a>
+                      </div>
+
+                    </div>
+
+                  <!--end--> 
+
+
+                <div id="form1" class="form">
+                    <div class="form-row" style="margin-top: -15px;">
+                      <div class="form-group col-md-6">
+                        <label for="e_bill">Avg. monthly electricity bill <i style="opacity: 0.7;">(€)</i></label>
+                        <input type="text" class="form-control" name="e_bill" placeholder="Electricity bill" id="electricityBill">
+                        <input type="hidden" id="hiddenTest" name="testHidden" value="">
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label for="g_bill">Avg. monthly gas bill <i style="opacity: 0.7;">(€)</i></label>
+                        <input type="text" class="form-control" name="g_bill" placeholder="Gas bill" id="gasBill">
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label for="f_bill">Avg. monthly fuel bill <i style="opacity: 0.7;">(€)</i></label>
+                        <input type="text" class="form-control" name="f_bill" placeholder="Fuel bill" id="fuelBill">
+                      </div>                
+                    </div>
+                  
+                  <div class="form-group col-md-5">
+                      
+                  </div>
+                  
+                  <button type="button" class="btn btn-primary btn-md" onclick="calculateResult()">Calculate</button> &nbsp;
+                  <input type="submit" value="Save" class="btn btn-primary btn-md" onclick="saveResult()">
+                </div>
+                </div>
+              </div>   
+       
+      </div>
+       
+      </div>
+      </div>
+    </div>
+</div>
+
+  <div class="col-md-4">
+    <div class="row-cols-md-10">
+      <div class="jumbotron" style="background-color:#7B808B;color: white;">
+        Your calculated result based on: <br>
+        <ul>
+          <li>Avg. monthly electricity bill: <span id="resultElectricity"></span></li>
+          <li>Avg. monthly gas bill :<span id="resultGas"></span></li>
+          <li>Avg. monthly fuel bill :<span id="resultFuel"></span></li>
+      
+        </ul>
+        Total carbon footprint:
+        <h4><b><span id="totalFootprint" name="totalResult"></span> kgCO2</b></h4><br>
+        <input type="hidden" id="hiddenField" name="resultFootPrint" value="">
+      </div>
+    </div>
+
+</div>
+
+</div>
+</form>
+<script>
+  function calculateResult() {
+            // Get input values
+            var electricityBill = document.getElementById('electricityBill').value;
+            var gasBill = document.getElementById('gasBill').value;
+            var fuelBill = document.getElementById('fuelBill').value;
+
+            // Calculate total carbon footprint (as an example, assuming simple conversion rates)
+            var totalCarbonFootprint = (electricityBill * (12)* 0.0005) + (gasBill * (12) * 0.0053) + (fuelBill * (12) * 2.32); // Placeholder formula
+
+            //var totalCarbonFootprint = (electricityBill * 0.0005) + (gasBill * 0.0053) + (fuelBill * 2.32); // Placeholder formula
+
+            // Display results
+            document.getElementById('resultElectricity').textContent = "€ " + electricityBill;
+            document.getElementById('resultGas').textContent = "€ " + gasBill
+            document.getElementById('resultFuel').textContent = "€ " + fuelBill;
+            document.getElementById('totalFootprint').textContent = totalCarbonFootprint.toFixed(2);
+            document.getElementById('hiddenField').value = totalCarbonFootprint
+
+            document.getElementById('hiddenTest').value = electricityBill
+        }
+</script>
+{% endblock %}
+

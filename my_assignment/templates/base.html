@@ -42,10 +42,18 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt" style="margin-right: 5px;"></i></div>
                                 Dashboard
                             </a>
-                            <a class="nav-link" href="/calculation">
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                                 <div class="sb-nav-link-icon"><i class="fas fa-calculator" style="margin-right: 5px;"></i></div>
                                 Calculate
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
+                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="/cal_energyusage">Energy Usage</a>
+                                    <a class="nav-link" href="/cal_waste">Waste</a>
+                                    <a class="nav-link" href="/cal_b_travel">Business Travel</a>
+                                </nav>
+                            </div>
                             <div class="sb-sidenav-menu-heading">Addons</div>
                             <a class="nav-link" href="/company_list">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-list" style="margin-right: 5px;"></i></div>
@@ -93,6 +101,7 @@
         <script src="{{ url_for('static', filename='js/simple-datatables.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/datatables-simple-demo.js') }}"></script>
         <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+
     </body>
 
 </html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+
+{% block user_name %}
+<b>{{ user.name }}</b>
+{% endblock %}
+
+{% block content %}
+<h1 class="mt-4">Business Travel</h1>
+  <ol class="breadcrumb mb-sm-0" style="background-color:white;font-size: small;margin-top: -10px">
+    <li class="breadcrumb-item">Calculate</li>
+    <li class="breadcrumb-item active">Business Travel</li>
+  </ol>
+
+<div class="row" style="margin-top: 10px;">
+  <div class="col-lg-8">
+    <div class="card mb-3">
+      <div class="card-header">
+        <i class="fas fa-calculator" style="margin-right: 5px;"></i>
+      </div>
+      <div class="card-body">
+        <div class="container">
+          <div class="container-fluid">
+            <form method="POST">
+            <div class="form-row">
+              <div class="form-group col-md-12">
+                
+                <!-- Radio buttons to select the form -->
+                <div class="form-row">
+                  <div class="form-group col-md-3">
+                    <label for="month">Month</label>
+                    <select name="month" class="form-control">
+                      <option selected>Choose...</option>
+                      <option value="January">January</option>
+                      <option value="February">February</option>
+                      <option value="March">March</option>
+                      <option value="April">April</option>
+                      <option value="May">May</option>
+                      <option value="June">June</option>
+                      <option value="July">July</option>
+                      <option value="August">August</option>
+                      <option value="September">September</option>
+                      <option value="October">October</option>
+                      <option value="November">November</option>
+                      <option value="December">December</option>
+                    </select>
+                  </div>
+                  <div class="form-group col-md-3">
+                    <label for="year">Year</label>
+                    <select name="year" class="form-control">
+                      <option selected>Choose...</option>
+                      <option value="2024">2024</option>
+                      <option value="2025">2025</option>
+                      <option value="2026">2026</option>
+                      <option value="2027">2027</option>
+                      <option value="2028">2028</option>
+                      <option value="2029">2029</option>
+                      <option value="2030">2030</option>
+                    </select>
+                  </div>
+                  <div class="form-group col-md-5">
+                    <label for="company">Company</label>
+                    <select name="company" class="form-control">
+                      <option selected>Choose...</option>
+                      {% for company in companies %}
+                        <option value="{{company.id}}">{{ company.name }}</option>
+                      {% endfor %}
+                    </select>
+                      <a href="/add_company"><i style="opacity: 0.7; font-size: small;">Add new</i></a>
+                  </div>
+                </div>
+                </div>
+                <div id="form3" class="form" style="margin-top: -30px;">
+                  <div class="form-row">
+                    <div class="form-group col-md-10">
+                      <label for="b_travel">Annual Business Travel <i style="opacity: 0.7;">(km)</i></label>
+                      <input type="text" class="form-control" name="b_travel" placeholder="Business travel">
+                    </div>
+                    <div class="form-group col-md-10">
+                      <label for="fuel_eff">Avg. fuel efficiency<i style="opacity: 0.7;">(L/100 km)</i></label>
+                      <input type="text" class="form-control" name="fuel_eff" placeholder="Fuel efficiency">
+                    </div>
+                  </div>
+                  <input type="submit" value="Calculate" class="btn btn-primary btn-md">
+                </div> 
+                
+              </div>
+              
+          </form>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+<div class="col-xxl-4">
+  {% if session['result'] %}
+  <form class="result_form" action="/save_result" method="POST">
+  <div class="card mb-4">
+      <div class="card-header">
+        <i class="fa-solid fa-square-poll-vertical"></i> 
+      </div>
+
+      <div class="card-body" style="text-align: center;">
+        <p>
+          Your calculation of {{ session.result.type }} for {{ session.result.month }} {{ session.result.year }}, based on an average monthly electricity bill of €{{ session.result.e_bill }}, an average monthly gas bill of €{{ session.result.g_bill }}, and an average monthly fuel bill of €{{ session.result.f_bill }}.
+        </p>
+
+      
+
+        <div class="jumbotron" style="margin-top: 30px;">
+          <div class="container">
+            <p class="lead">The result is:</p>
+            <h3>{{ session.result.result }} kgCO2</h3>
+            
+          </div>
+        </div>
+        
+        <input type="submit" value="Save" class="btn btn-primary btn-md">
+      </div>
+  </div>
+</form>
+{% endif %}
+</div></div>
+<script>
+  // Function to display the corresponding form based on selected radio button
+  function showForm(formId) {
+  
+    // Hide all forms
+    const forms = document.querySelectorAll('.form');
+    forms.forEach(form => {
+      form.style.display = 'none';
+    });
+
+    // Show the selected form
+    const selectedForm = document.getElementById(formId);
+    if (selectedForm) {
+      selectedForm.style.display = 'block';
+    }
+
+       // Hide all forms
+    const result_form = document.querySelectorAll('.result_form');
+    result_form.forEach(form => {
+      form.style.display = 'none';
+    });
+  }
+
+</script>
+{% endblock %}
