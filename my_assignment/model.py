@@ -51,6 +51,10 @@ class Company(db.Model):
 
     #one to many relationship
     usage = db.relationship('Usage', backref='companies')
+    energy = db.relationship('Energy', backref='companies')
+    waste = db.relationship('Waste', backref='companies')
+    businessTravel = db.relationship('BusinessTravel', backref='companies')
+
 
     def __init__(self, name, address, sector, contact_person, email, postal_code):
         self.name = name
@@ -84,6 +88,71 @@ class Usage(db.Model):
         self.month = month
         self.year = year
         self.company_id = company_id
+
+#Energy usage model
+class Energy(db.Model):
+
+    __table__ = "energy"
+
+    id = db.Column(db.Integer, primary_key=True)
+    month = db.Column(db.Integer, nullable=True)
+    year = db.Column(db.Integer, nullable=False) 
+    e_bill = db.Column(db.Float, nullable=False)
+    g_bill = db.Column(db.Float, nullable=False)
+    f_bill = db.Column(db.Float, nullable=False)
+
+    #foreign key
+    company_id = db.Column(db.Integer, db.ForeignKey('companies.id'))
+
+    def __init__(self, month, year, e_bill, g_bill, f_bill, company_id):
+        self.month = month
+        self.year = year
+        self.e_bill = e_bill
+        self.g_bill = g_bill
+        self.f_bill = f_bill
+        self.company_id = company_id
+
+#Waste model
+class Waste(db.Model):
+
+    __table__ = "waste"
+
+    id = db.Column(db.Integer, primary_key=True)
+    month = db.Column(db.Integer, nullable=True)
+    year = db.Column(db.Integer, nullable=False) 
+    g_waste = db.Column(db.Float, nullable=False)
+    r_waste = db.Column(db.Float, nullable=False)
+
+    #foreign key
+    company_id = db.Column(db.Integer, db.ForeignKey('companies.id'))
+
+    def __init__(self, month, year, g_waste, r_waste, company_id):
+        self.month = month
+        self.year = year
+        self.e_bill = g_waste
+        self.r_waste = r_waste
+        self.company_id = company_id
+
+#Business Travel Model
+class BusinessTravel(db.Model):
+    
+    __table__ = "businessTravel"
+
+    id = db.Column(db.Integer, primary_key=True)
+    month = db.Column(db.Integer, nullable=True)
+    year = db.Column(db.Integer, nullable=False) 
+    b_travel = db.Column(db.Float, nullable=False)
+    avg_fuel = db.Column(db.Float, nullable=False)
+
+    #foreign key
+    company_id = db.Column(db.Integer, db.ForeignKey('companies.id'))
+
+    def __init__(self, month, year, b_travel, avg_fuel, company_id):
+        self.month = month
+        self.year = year
+        self.b_travel = b_travel
+        self.avg_fuel = avg_fuel
+        self.company_id = company_id    
 
 with app.app_context():
     db.create_all()
