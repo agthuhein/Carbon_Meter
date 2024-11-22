@@ -47,14 +47,6 @@ def dashboard():
             user = User.query.filter_by(email = session['email']).first()
         return render_template('dashboard.html', user=user)
 
-
-    #return redirect('index.html')
-    '''
-        if session['name']:
-        return render_template('dashboard.html')
-    else:
-        return redirect(url_for('index'))
-    '''
 @app.route('/logout')
 def logout():
     session.pop('email', None)
@@ -103,13 +95,6 @@ def cal_energyusage():
         return redirect(url_for('cal_energyusage'))
     return render_template('cal_energyusage.html', user=user, companies=companies)
 
-'''
- with app.app_context():
-            new_company = Company(name=name, address=address, sector=sector, contact_person=contact_person, email=email, postal_code=postal_code)
-
-            db.session.add(new_company)
-            db.session.commit()
-'''
 ###route waste calculation page
 @app.route('/cal_waste', methods=['GET','POST'])
 def cal_waste():

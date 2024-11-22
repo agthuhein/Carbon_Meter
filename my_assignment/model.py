@@ -154,5 +154,6 @@ class BusinessTravel(db.Model):
         self.avg_fuel = avg_fuel
         self.company_id = company_id    
 
+
 with app.app_context():
     db.create_all()
