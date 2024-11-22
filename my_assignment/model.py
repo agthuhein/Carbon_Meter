@@ -92,7 +92,7 @@ class Usage(db.Model):
 #Energy usage model
 class Energy(db.Model):
 
-    __table__ = "energy"
+    __tablename__ = "energy"
 
     id = db.Column(db.Integer, primary_key=True)
     month = db.Column(db.Integer, nullable=True)
@@ -115,7 +115,7 @@ class Energy(db.Model):
 #Waste model
 class Waste(db.Model):
 
-    __table__ = "waste"
+    __tablename__ = "waste"
 
     id = db.Column(db.Integer, primary_key=True)
     month = db.Column(db.Integer, nullable=True)
@@ -136,7 +136,7 @@ class Waste(db.Model):
 #Business Travel Model
 class BusinessTravel(db.Model):
     
-    __table__ = "businessTravel"
+    __tablename__ = "businessTravel"
 
     id = db.Column(db.Integer, primary_key=True)
     month = db.Column(db.Integer, nullable=True)
@@ -153,7 +153,6 @@ class BusinessTravel(db.Model):
         self.b_travel = b_travel
         self.avg_fuel = avg_fuel
         self.company_id = company_id    
-
 
 with app.app_context():
     db.create_all()
