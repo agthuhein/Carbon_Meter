@@ -9,7 +9,7 @@
 <h1 class="mt-4">Energy Usage</h1>
   <ol class="breadcrumb mb-sm-0" style="background-color:white;font-size: small;margin-top: -10px">
     <li class="breadcrumb-item">Calculate</li>
-    <li class="breadcrumb-item active">Energy Usages</li>
+    <li class="breadcrumb-item active">Energy Usage</li>
   </ol>
 <form method="POST">
 <div class="row" style="margin-top: 10px;">
@@ -28,7 +28,7 @@
                     <div class="form-row">
                       <div class="form-group col-md-3">
                         <label for="month">Month</label>
-                        <select name="month" class="form-control">
+                        <select name="month" class="form-control" id="e_month">
                         <option selected>Choose...</option>
                         <option value="1">January</option>
                         <option value="2">February</option>
@@ -43,11 +43,12 @@
                         <option value="11">November</option>
                         <option value="12">December</option>
                       </select>
+                      <span id="month-error" class="error-message"></span>
                       </div>
 
                       <div class="form-group col-md-3">
                         <label for="year">Year</label>
-                        <select name="year" class="form-control">
+                        <select name="year" class="form-control" id="e_year">
                           <option selected>Choose...</option>
                           <option value="2024">2024</option>
                           <option value="2025">2025</option>
@@ -57,17 +58,19 @@
                           <option value="2029">2029</option>
                           <option value="2030">2030</option>
                         </select>
+                        <span id="year-error" class="error-message"></span>
                       </div>
 
                       <div class="form-group col-md-6">
                         <label for="company">Company</label>
-                        <select name="company" class="form-control">
+                        <select name="company" class="form-control" id="e_company">
                         <option selected>Choose...</option>
                           {% for company in companies %}
                             <option value="{{company.id}}">{{ company.name }}</option>
                           {% endfor %}
                         </select>
-                          <a href="/add_company"><i style="opacity: 0.7; font-size: small;">Add new</i></a>
+                          <a href="/add_company"><i style="opacity: 0.7; font-size: small;">Add new</i></a><br>
+                          <span id="company-error" class="error-message"></span>
                       </div>
 
                     </div>
@@ -80,28 +83,26 @@
                       <div class="form-group col-md-6">
                         <label for="e_bill">Avg. monthly electricity bill <i style="opacity: 0.7;">(€)</i></label>
                         <input type="text" class="form-control" name="e_bill" placeholder="Electricity bill" id="electricityBill">
-                        <input type="hidden" id="hiddenTest" name="testHidden" value="">
+                        <span id="eBill-error" class="error-message"></span>
                       </div>
                     </div>
                     <div class="form-row">
                       <div class="form-group col-md-6">
                         <label for="g_bill">Avg. monthly gas bill <i style="opacity: 0.7;">(€)</i></label>
                         <input type="text" class="form-control" name="g_bill" placeholder="Gas bill" id="gasBill">
+                        <span id="gBill-error" class="error-message"></span>
                       </div>
                     </div>
                     <div class="form-row">
                       <div class="form-group col-md-6">
                         <label for="f_bill">Avg. monthly fuel bill <i style="opacity: 0.7;">(€)</i></label>
                         <input type="text" class="form-control" name="f_bill" placeholder="Fuel bill" id="fuelBill">
+                        <span id="fBill-error" class="error-message"></span>
                       </div>                
                     </div>
                   
-                  <div class="form-group col-md-5">
-                      
-                  </div>
-                  
-                  <button type="button" class="btn btn-primary btn-md" onclick="calculateResult()">Calculate</button> &nbsp;
-                  <input type="submit" value="Save" class="btn btn-primary btn-md" onclick="saveResult()">
+                  <button type="button" style="background-color:#7B808B;color: white;" class="btn btn-md" onclick="calculateResult()">Calculate</button> &nbsp;
+                  <input type="submit" value="Save" class="btn btn-primary btn-md" id="btn_Save" disabled>
                 </div>
                 </div>
               </div>   
@@ -134,9 +135,11 @@
 </div>
 </form>
 <script>
-  function calculateResult() {
-            // Get input values
-            var electricityBill = document.getElementById('electricityBill').value;
+      function calculateResult() {
+        var x = validateEnergyUsageForm()
+        if (x == true){
+          // Get input values
+          var electricityBill = document.getElementById('electricityBill').value;
             var gasBill = document.getElementById('gasBill').value;
             var fuelBill = document.getElementById('fuelBill').value;
 
@@ -152,8 +155,70 @@
             document.getElementById('totalFootprint').textContent = totalCarbonFootprint.toFixed(2);
             document.getElementById('hiddenField').value = totalCarbonFootprint
 
-            document.getElementById('hiddenTest').value = electricityBill
+            document.getElementById('btn_Save').disabled = false;
+
         }
+        else{
+          document.getElementById('btn_Save').disabled = true;
+        }
+            
+        }
+      function validateEnergyUsageForm() {
+      const e_month = document.getElementById("e_month").value;
+      const e_year = document.getElementById("e_year").value;
+      const e_company = document.getElementById("e_company").value;
+      const e_bill = document.getElementById("electricityBill").value;
+      const g_bill = document.getElementById("gasBill").value;
+      const f_bill = document.getElementById("fuelBill").value;
+  
+      const monthError = document.getElementById("month-error");
+      const yearError = document.getElementById("year-error");
+      const companyError = document.getElementById("company-error");
+      const eBillError = document.getElementById("eBill-error");
+      const gBillError = document.getElementById("gBill-error");
+      const fBillError = document.getElementById("fBill-error");
+  
+      monthError.textContent = "";
+      yearError.textContent = "";
+      companyError.textContent = "";
+      eBillError.textContent = "";
+      gBillError.textContent = "";
+      fBillError.textContent = "";
+  
+      let isValid = true;
+  
+      if (e_month === "" || e_month === "Choose...") {
+          monthError.textContent = "Please select a month.";
+          isValid = false;
+      }
+  
+      if (e_year === "" || e_year === "Choose...") {
+          yearError.textContent = "Please select a year.";
+          isValid = false;
+      }
+  
+      if (e_company === "" || e_company === "Choose...") {
+          companyError.textContent = "Please select a company.";
+          isValid = false;
+      }
+  
+      if (e_bill === "" || isNaN(e_bill)) {
+          eBillError.textContent = "Please enter a valid electricity bill.";
+          isValid = false;
+      }
+  
+      if (g_bill === "" || isNaN(g_bill)) {
+          gBillError.textContent = "Please enter a valid gas bill.";
+          isValid = false;
+      }
+  
+      if (f_bill === "" || isNaN(f_bill)) {
+          fBillError.textContent = "Please enter a valid fuel bill.";
+          isValid = false;
+      }
+  
+      return isValid;
+  }
 </script>
 {% endblock %}
 

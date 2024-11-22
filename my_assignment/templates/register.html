@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <!-- Design by foolishdeveloper.com -->
-    <title>Carbon Calculator</title>
-    <link rel="shortcut icon" type="image/x-icon" href="carbon.png" sizes="128x128" />
+    <title>Carbon Meter</title>
+
   
 
     <!--Stylesheet-->
@@ -26,33 +26,10 @@ body{
     left: 50%;
     top: 50%;
 }
-.background .shape{
-    height: 200px;
-    width: 200px;
-    position: absolute;
-    border-radius: 50%;
-}
-.shape:first-child{
-    background: linear-gradient(
-        #1845ad,
-        #23a2f6
-    );
-    left: -80px;
-    top: -80px;
-}
-.shape:last-child{
-    background: linear-gradient(
-        to right,
-        #ff512f,
-        #f09819
-    );
-    right: -30px;
-    bottom: -80px;
-}
 form{
-    height: 550px;
-    width: 400px;
-    background-color: rgba(0, 0, 0, 0.13);
+    height: 700px;
+    width: 500px;
+    background-color: rgba(0, 0, 0, 0.15);
     position: absolute;
     transform: translate(-50%,-50%);
     top: 50%;
@@ -61,7 +38,7 @@ form{
     backdrop-filter: blur(10px);
     border: 2px solid rgba(255,255,255,0.1);
     box-shadow: 0 0 40px rgba(8,7,16,0.6);
-    padding: 25px 35px;
+    padding: 50px 35px;
 }
 form *{
     font-family: 'Poppins',sans-serif;
@@ -119,29 +96,94 @@ a{
   color: #000000;
   opacity: 0.5;
 }
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+}
+.image-container {
+    text-align: center;  /* Center image horizontally */
+    margin-bottom: 10px;
+}
+
+.image-container img {
+      /* Ensure the image is responsive */
+    width: 100px;
+    height: 60px;
+}
+
 
     </style>
+    <link rel="icon" href="{{ url_for('static', filename='image/cm_.png') }}">
 </head>
 <body>
-    <div class="background">
-        <div class="shape"></div>
-        <div class="shape"></div>
-    </div>
-    <form method="POST">
+    <form method="POST" onsubmit="return validateForm()">
+        <div class="image-container">
+            <img src="{{ url_for('static', filename='image/cm_.png') }}" alt="Centered Image">
+        </div>
         <h3>Register Here</h3>
 
         <label for="name">Name</label>
-        <input type="text" class="form-control" placeholder="Enter your name" name="name">
+        <input type="text" class="form-control" placeholder="Enter your name" id="v_name" name="name">
+        <span id="name-error" class="error-message"></span>
 
         <label for="email">Email</label>
-        <input type="email" class="form-control" placeholder="Enter your email" name="email">
+        <input type="email" class="form-control" placeholder="Enter your email" id="v_email" name="email">
+        <span id="email-error" class="error-message"></span>
 
-        <label for="password">Confirm Password</label>
-        <input type="password" class="form-control" placeholder="Enter your password" name="password">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" placeholder="Enter your password" id="v_password" name="password">
+        <span id="password-error" class="error-message"></span>
+        
         <button type="submit">Register</button>
-        <br><br>
-        <a href="/">Login User</a>
+        
+        <label style="text-align: center;">Already a user? <a href="/">Login User</a></label>
+
+        
 
     </form>
+    <script>
+        function validateForm() {
+        const name = document.getElementById("v_name").value;
+        const email = document.getElementById("v_email").value;
+        const password = document.getElementById("v_password").value;
+        
+        const nameError = document.getElementById(
+            "name-error"
+        );
+        const emailError = document.getElementById(
+            "email-error"
+        );
+        const passwordError = document.getElementById(
+            "password-error"
+        );
+        
+        nameError.textContent = "";
+        emailError.textContent = "";
+        passwordError.textContent = "";
+    
+        let isValid = true;
+        
+        if (name === "") {
+            nameError.textContent =
+                "Please enter a name.";
+            isValid = false;
+        }
+
+        if (email === "" || !email.includes("@")) {
+            emailError.textContent =
+                "Please enter a valid email address.";
+            isValid = false;
+        }
+    
+        if (password === "") {
+            passwordError.textContent =
+                "Please enter a password.";
+            isValid = false;
+        }
+    
+        return isValid;
+    }
+        </script>
 </body>
 </html>

@@ -92,13 +92,13 @@ def cal_energyusage():
         g_bill = request.form['g_bill']
         f_bill = request.form['f_bill']
         result = request.form['resultFootPrint']
-        print(month)
-        print(year)
-        print(company)
-        print(e_bill)
-        print(g_bill)
-        print(f_bill)
-        print(result)
+        print(type(month))
+        print(type(year))
+        print(type(company))
+        print(type(e_bill))
+        print(type(g_bill))
+        print(type(f_bill))
+        print(type(result))
         
         return redirect(url_for('cal_energyusage'))
     return render_template('cal_energyusage.html', user=user, companies=companies)

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <!-- Design by foolishdeveloper.com -->
-    <title>Carbon Calculator</title>
+    <title>Carbon Meter</title>
     <style media="screen">
       *,
 *:before,
@@ -22,33 +22,10 @@ body{
     left: 50%;
     top: 50%;
 }
-.background .shape{
-    height: 200px;
-    width: 200px;
-    position: absolute;
-    border-radius: 50%;
-}
-.shape:first-child{
-    background: linear-gradient(
-        #1845ad,
-        #23a2f6
-    );
-    left: -80px;
-    top: -80px;
-}
-.shape:last-child{
-    background: linear-gradient(
-        to right,
-        #ff512f,
-        #f09819
-    );
-    right: -30px;
-    bottom: -80px;
-}
 form{
-    height: 550px;
-    width: 400px;
-    background-color: rgba(0, 0, 0, 0.13);
+    height: 700px;
+    width: 500px;
+    background-color: rgba(0, 0, 0, 0.15);
     position: absolute;
     transform: translate(-50%,-50%);
     top: 50%;
@@ -66,7 +43,7 @@ form *{
     outline: none;
     border: none;
 }
-form h3{
+form h4{
     font-size: 32px;
     font-weight: 500;
     line-height: 42px;
@@ -108,36 +85,86 @@ button{
     border-radius: 5px;
     cursor: pointer;
 }
-h3{
+h4{
     color: #080710;
+    font-weight: bold;
 }
 a{
   color: #000000;
   opacity: 0.5;
   margin-top: 30px;
 }
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+}
+.image-container {
+    text-align: center;  /* Center image horizontally */
+    margin-bottom: 10px;
+}
 
-    </style>
-<link rel="icon" href="{{ url_for('static', filename='image/carbon.png') }}">
+.image-container img {
+      /* Ensure the image is responsive */
+    width: 100px;
+    height: 60px;
+}
+</style>
+<link rel="icon" href="{{ url_for('static', filename='image/cm_.png') }}">
 </head>
 <body>
-    <div class="background">
-        <div class="shape"></div>
-        <div class="shape"></div>
-    </div>
-    <form method="POST">
-        <h3>Login Here</h3>
+    <form method="POST" onsubmit="return validateForm()">
+        <div class="image-container">
+            <img src="{{ url_for('static', filename='image/cm_.png') }}" alt="Centered Image">
+        </div>
+        
+        <h4>Login Here</h4>
 
         <label for="email">Email</label>
-        <input type="text" class="form-control" placeholder="Enter your email" name="email">
+        <input type="text" class="form-control" placeholder="Enter your email" id="v_email" name="email">
+        <span id="email-error" class="error-message"></span>
 
         <label for="password">Password</label>
-        <input type="password" class="form-control" placeholder="Enter your password" name="password">
+        <input type="password" class="form-control" placeholder="Enter your password" id="v_password" name="password">
+        <span id="password-error" class="error-message"></span>
 
         <button type="submit">Log In</button>
-        <br><br>
-        <a href="/register">Register User</a>
+
+        <label style="text-align: center;">Don't have an account? <a href="/register">Register User</a></label>
+        
 
     </form>
+    <script>
+    function validateForm() {
+        const email = document.getElementById("v_email").value;
+        const password = document.getElementById("v_password").value;
+        
+        const emailError = document.getElementById(
+            "email-error"
+        );
+        const passwordError = document.getElementById(
+            "password-error"
+        );
+
+        emailError.textContent = "";
+        passwordError.textContent = "";
+
+        let isValid = true;
+
+        if (email === "" || !email.includes("@")) {
+            emailError.textContent =
+                "Please enter a valid email address.";
+            isValid = false;
+        }
+
+        if (password === "") {
+            passwordError.textContent =
+                "Please enter a password";
+            isValid = false;
+        }
+
+        return isValid;
+    }
+    </script>
 </body>
 </html>

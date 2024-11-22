@@ -11,7 +11,7 @@
     <li class="breadcrumb-item">Calculate</li>
     <li class="breadcrumb-item active">Waste</li>
   </ol>
-
+<form method="POST">
 <div class="row" style="margin-top: 10px;">
   <div class="col-lg-8">
     <div class="card mb-3">
@@ -21,128 +21,183 @@
       <div class="card-body">
         <div class="container">
           <div class="container-fluid">
-            <form method="POST">
-            <div class="form-row">
-              <div class="form-group col-md-12">
-                
-                <!-- Radio buttons to select the form -->
-                <div class="form-row">
-                  <div class="form-group col-md-3">
-                    <label for="month">Month</label>
-                    <select name="month" class="form-control">
-                      <option selected>Choose...</option>
-                      <option value="January">January</option>
-                      <option value="February">February</option>
-                      <option value="March">March</option>
-                      <option value="April">April</option>
-                      <option value="May">May</option>
-                      <option value="June">June</option>
-                      <option value="July">July</option>
-                      <option value="August">August</option>
-                      <option value="September">September</option>
-                      <option value="October">October</option>
-                      <option value="November">November</option>
-                      <option value="December">December</option>
-                    </select>
-                  </div>
-                  <div class="form-group col-md-3">
-                    <label for="year">Year</label>
-                    <select name="year" class="form-control">
-                      <option selected>Choose...</option>
-                      <option value="2024">2024</option>
-                      <option value="2025">2025</option>
-                      <option value="2026">2026</option>
-                      <option value="2027">2027</option>
-                      <option value="2028">2028</option>
-                      <option value="2029">2029</option>
-                      <option value="2030">2030</option>
-                    </select>
-                  </div>
-                  <div class="form-group col-md-5">
-                    <label for="company">Company</label>
-                    <select name="company" class="form-control">
-                      <option selected>Choose...</option>
-                      {% for company in companies %}
-                        <option value="{{company.id}}">{{ company.name }}</option>
-                      {% endfor %}
-                    </select>
-                      <a href="/add_company"><i style="opacity: 0.7; font-size: small;">Add new</i></a>
-                  </div>
-                </div>
-                </div>
-                <!-- Form 2 -->
-                <div id="form2" class="form" style="margin-top: -30px;">
-                  <div class="form-row">
-                    <div class="form-group col-md-9">
-                      <label for="gen_waste">Monthly Generated Waste <i style="opacity: 0.7;">(in kg)</i></label>
-                      <input type="text" class="form-control" name="gen_waste" placeholder="Generated Waste">
+ 
+              <div class="form-row">
+                <div class="form-group col-md-12">
+                  <!--start-->
+                    <div class="form-row">
+                      <div class="form-group col-md-3">
+                        <label for="month">Month</label>
+                        <select name="month" class="form-control" id="w_month">
+                        <option selected>Choose...</option>
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                      </select>
+                      <span id="month-error" class="error-message"></span>
+                      </div>
+
+                      <div class="form-group col-md-3">
+                        <label for="year">Year</label>
+                        <select name="year" class="form-control" id="w_year">
+                          <option selected>Choose...</option>
+                          <option value="2024">2024</option>
+                          <option value="2025">2025</option>
+                          <option value="2026">2026</option>
+                          <option value="2027">2027</option>
+                          <option value="2028">2028</option>
+                          <option value="2029">2029</option>
+                          <option value="2030">2030</option>
+                        </select>
+                        <span id="year-error" class="error-message"></span>
+                      </div>
+
+                      <div class="form-group col-md-6">
+                        <label for="company">Company</label>
+                        <select name="company" class="form-control" id="w_company">
+                        <option selected>Choose...</option>
+                          {% for company in companies %}
+                            <option value="{{company.id}}">{{ company.name }}</option>
+                          {% endfor %}
+                        </select>
+                          <a href="/add_company"><i style="opacity: 0.7; font-size: small;">Add new</i></a><br>
+                          <span id="company-error" class="error-message"></span>
+                      </div>
+
                     </div>
-                    <div class="form-group col-md-9">
-                      <label for="rec_waste">Monthly Recycled Waste <i style="opacity: 0.7;">(in %)</i></label>
-                      <input type="text" class="form-control" name="rec_waste" placeholder="Recycled Waste">
+
+                  <!--end--> 
+
+
+                <div id="form1" class="form">
+                    <div class="form-row" style="margin-top: -15px;">
+                      <div class="form-group col-md-6">
+                        <label for="gen_waste">Monthly Generated Waste <i style="opacity: 0.7;">(in kg)</i></label>
+                        <input type="text" class="form-control" name="gen_waste" placeholder="Generated Waste" id="gen_waste">
+                        <span id="genWaste-error" class="error-message"></span>
+                      </div>
                     </div>
-                  </div>
-                  <input type="submit" value="Calculate" class="btn btn-primary btn-md">  
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label for="rec_waste">Monthly Recycled Waste <i style="opacity: 0.7;">(in %)</i></label>
+                        <input type="text" class="form-control" name="rec_waste" placeholder="Recycled Waste" id="rec_waste">
+                        <span id="recWaste-error" class="error-message"></span>
+                      </div>
+                    </div>
+                    <button type="button" style="background-color:#7B808B;color: white;" class="btn btn-md" onclick="calculateWaste()">Calculate</button> &nbsp;
+                    <input type="submit" value="Save" class="btn btn-primary btn-md" id="btn_Save" disabled>
                 </div>
-              </div>
-                     
-          </form>
-          </div>
-        </div>
+                </div>
+              </div>   
+       
+      </div>
+       
+      </div>
       </div>
     </div>
 </div>
-<div class="col-xxl-4">
-  {% if session['result'] %}
-  <form class="result_form" action="/save_result" method="POST">
-  <div class="card mb-4">
-      <div class="card-header">
-        <i class="fa-solid fa-square-poll-vertical"></i> 
-      </div>
 
-      <div class="card-body" style="text-align: center;">
-        <p>
-          Your calculation of {{ session.result.type }} for {{ session.result.month }} {{ session.result.year }}, based on an average monthly electricity bill of €{{ session.result.e_bill }}, an average monthly gas bill of €{{ session.result.g_bill }}, and an average monthly fuel bill of €{{ session.result.f_bill }}.
-        </p>
-
+  <div class="col-md-4">
+    <div class="row-cols-md-10">
+      <div class="jumbotron" style="background-color:#7B808B;color: white;">
+        Your calculated result based on: <br>
+        <ul>
+          <li>General Waste: <span id="resultGenWaste"></span></li>
+          <li>Recycled Waste: <span id="resultRecWaste"></span></li>
       
-
-        <div class="jumbotron" style="margin-top: 30px;">
-          <div class="container">
-            <p class="lead">The result is:</p>
-            <h3>{{ session.result.result }} kgCO2</h3>
-            
-          </div>
-        </div>
-        
-        <input type="submit" value="Save" class="btn btn-primary btn-md">
+        </ul>
+        Total carbon footprint:
+        <h4><b><span id="totalFootprint" name="totalResult"></span> kgCO2</b></h4><br>
+        <input type="hidden" id="hiddenField" name="resultFootPrint" value="">
       </div>
-  </div>
+    </div>
+
+</div>
+
+</div>
 </form>
-{% endif %}
-</div></div>
 <script>
-  // Function to display the corresponding form based on selected radio button
-  function showForm(formId) {
-  
-    // Hide all forms
-    const forms = document.querySelectorAll('.form');
-    forms.forEach(form => {
-      form.style.display = 'none';
-    });
+  function calculateWaste() {
+    var x = validateEnergyUsageForm()
+    if(x == true)
+    {
+      // Get input values
+      var gen_waste = document.getElementById('gen_waste').value;
+      var rec_waste = document.getElementById('rec_waste').value;
 
-    // Show the selected form
-    const selectedForm = document.getElementById(formId);
-    if (selectedForm) {
-      selectedForm.style.display = 'block';
+      // Calculate total carbon footprint (as an example, assuming simple conversion rates)
+      var wasteResult = (gen_waste * (12)* 0.57) - ((rec_waste * (1)) / 100) * ((gen_waste) * 12); // Placeholder formula
+
+      //var totalCarbonFootprint = (electricityBill * 0.0005) + (gasBill * 0.0053) + (fuelBill * 2.32); // Placeholder formula
+
+      // Display results
+      document.getElementById('resultGenWaste').textContent = gen_waste + " kg";
+      document.getElementById('resultRecWaste').textContent = rec_waste + " %"
+      document.getElementById('totalFootprint').textContent = wasteResult.toFixed(2);
+      document.getElementById('hiddenField').value = wasteResult
+
+      document.getElementById('btn_Save').disabled = false;
     }
-
-       // Hide all forms
-    const result_form = document.querySelectorAll('.result_form');
-    result_form.forEach(form => {
-      form.style.display = 'none';
-    });
+    else{
+      document.getElementById('btn_Save').disabled = true;
+    }
+    
   }
 
+  function validateEnergyUsageForm() {
+    const w_month = document.getElementById("w_month").value;
+    const w_year = document.getElementById("w_year").value;
+    const w_company = document.getElementById("w_company").value;
+    const gen_waste = document.getElementById("gen_waste").value;
+    const rec_waste = document.getElementById("rec_waste").value;
+  
+    const monthError = document.getElementById("month-error");
+    const yearError = document.getElementById("year-error");
+    const companyError = document.getElementById("company-error");
+    const gWasteError = document.getElementById("genWaste-error");
+    const rWasteError = document.getElementById("recWaste-error");
+  
+    monthError.textContent = "";
+    yearError.textContent = "";
+    companyError.textContent = "";
+    gWasteError.textContent = "";
+    rWasteError.textContent = "";
+  
+    let isValid = true;
+  
+    if (w_month === "" || w_month === "Choose...") {
+      monthError.textContent = "Please select a month.";
+      isValid = false;
+    }
+  
+    if (w_year === "" || w_year === "Choose...") {
+      yearError.textContent = "Please select a year.";
+      isValid = false;
+    }
+  
+    if (w_company === "" || w_company === "Choose...") {
+      companyError.textContent = "Please select a company.";
+      isValid = false;
+    }
+  
+    if (gen_waste === "" || isNaN(gen_waste)) {
+      gWasteError.textContent = "Please enter a valid generated waste.";
+      isValid = false;
+    }
+  
+    if (rec_waste === "" || isNaN(rec_waste)) {
+      rWasteError.textContent = "Please enter a valid recycled waste.";        isValid = false;
+    }
+  return isValid;
+  }
 </script>
 {% endblock %}
