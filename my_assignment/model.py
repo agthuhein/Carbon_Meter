@@ -73,18 +73,18 @@ class Usage(db.Model):
     energy = db.Column(db.Float, nullable=False)
     waste = db.Column(db.Float, nullable=False)
     fuel = db.Column(db.Float, nullable=False)
-    result = db.Column(db.Float, nullable=False)
+    #result = db.Column(db.Float, nullable=False)
     month = db.Column(db.Integer, nullable=True)
     year = db.Column(db.Integer, nullable=False)
 
     #foreign key
     company_id = db.Column(db.Integer, db.ForeignKey('companies.id'))
 
-    def __init__(self, energy, waste, fuel, result, month, year, company_id):
+    def __init__(self, energy, waste, fuel, month, year, company_id):
         self.energy = energy
         self.waste = waste
         self.fuel = fuel
-        self.result = result
+        #self.result = result
         self.month = month
         self.year = year
         self.company_id = company_id

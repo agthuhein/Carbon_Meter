@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template, redirect, url_for, session, jsonify
-from model import db, app, User, Company
+from model import db, app, User, Company, Energy, Waste, BusinessTravel, Usage
 
 ###Views###
 @app.route('/', methods=['GET','POST'])
@@ -64,6 +64,7 @@ def company_list():
         
         with app.app_context():
             companies = Company.query.all()
+            print(companies)
     
         return render_template('company_list.html', user=user, companies=companies)
 
@@ -79,19 +80,61 @@ def cal_energyusage():
     if request.method == 'POST':
         month = int(request.form['month'])
         year = int(request.form['year'])
-        company = int(request.form['company'])
+        company_id = int(request.form['company'])
         e_bill = float(request.form['e_bill'])
         g_bill = float(request.form['g_bill'])
         f_bill = float(request.form['f_bill'])
-        result = float(request.form['resultFootPrint'])
+        energyUsage_result = float(request.form['resultFootPrint'])
         print(month)
         print(year)
-        print(company)
+        print(company_id)
         print(e_bill)
         print(g_bill)
         print(f_bill)
-        print(result)
-        
+        print(energyUsage_result)
+        with app.app_context():
+            usage_ID = 0
+            energyUsage_ID = 0
+            queryUsage = Usage.query.filter_by(company_id=company_id, month=month, year=year)
+            recordUsage = queryUsage.all()
+
+            queryEnergyUsage = Energy.query.filter_by(company_id=company_id, month=month, year=year)
+            recordEnergyUsage = queryEnergyUsage.all()
+
+            for r in recordUsage:
+                usage_ID = r.id
+            
+            for e in recordEnergyUsage:
+                energyUsage_ID = e.id
+            
+            #usage table add and update
+            if usage_ID == 0:
+                new_Usage = Usage(energy = energyUsage_result, waste=0.0, fuel= 0.0, month=month, year=year, company_id=company_id)
+                db.session.add(new_Usage)
+
+                db.session.commit()
+            else:
+                usage = Usage.query.get(usage_ID)
+                usage.energy = energyUsage_result
+                db.session.add(usage)
+
+                db.session.commit()
+            
+            #Energy Usage table add and update
+            if(energyUsage_ID == 0):
+                new_energyUsage = Energy(month = month, year = year, e_bill = e_bill, g_bill = g_bill, f_bill = f_bill, company_id=company_id)
+                db.session.add(new_energyUsage)
+
+                db.session.commit()
+            else:
+                energyUsage = Energy.query.get(energyUsage_ID)
+                energyUsage.e_bill = e_bill
+                energyUsage.g_bill = g_bill
+                energyUsage.f_bill = f_bill
+                db.session.add(energyUsage)
+
+                db.session.commit()
+
         return redirect(url_for('cal_energyusage'))
     return render_template('cal_energyusage.html', user=user, companies=companies)
 
