@@ -11,7 +11,7 @@
     <li class="breadcrumb-item">Calculate</li>
     <li class="breadcrumb-item active">Energy Usage</li>
   </ol>
-<form method="POST">
+<form method="POST" id="myForm">
 <div class="row" style="margin-top: 10px;">
   <div class="col-lg-8">
     <div class="card mb-3">
@@ -50,6 +50,7 @@
                         <label for="year">Year</label>
                         <select name="year" class="form-control" id="e_year">
                           <option selected>Choose...</option>
+                          <option value="2023">2023</option>
                           <option value="2024">2024</option>
                           <option value="2025">2025</option>
                           <option value="2026">2026</option>
@@ -126,9 +127,18 @@
         </ul>
         Total carbon footprint:
         <h4><b><span id="totalFootprint" name="totalResult"></span> kgCO2</b></h4><br>
+
         <input type="hidden" id="hiddenField" name="resultFootPrint" value="">
       </div>
     </div>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+    {% for message in messages %}
+        <p class="flash-class-success">{{ message }}</p>
+    {% endfor %}
+{% endif %}
+{% endwith %}
+
 
 </div>
 
@@ -153,7 +163,7 @@
             document.getElementById('resultGas').textContent = "€ " + gasBill
             document.getElementById('resultFuel').textContent = "€ " + fuelBill;
             document.getElementById('totalFootprint').textContent = totalCarbonFootprint.toFixed(2);
-            document.getElementById('hiddenField').value = totalCarbonFootprint
+            document.getElementById('hiddenField').value = totalCarbonFootprint.toFixed(2);
 
             document.getElementById('btn_Save').disabled = false;
 

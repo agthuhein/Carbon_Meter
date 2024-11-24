@@ -11246,3 +11246,13 @@ body {
   font-size: 14px;
   margin-top: 5px;
 }
+.flash-class-success{
+  color: green;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid green;
+  color: green;
+  background-color: #e6ffe6;
+  border-radius: 5px;
+  transition: opacity 0.5s ease-out;
+}

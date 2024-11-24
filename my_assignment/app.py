@@ -1,5 +1,8 @@
-from flask import Flask, request, render_template, redirect, url_for, session, jsonify
+from flask import Flask, request, render_template, redirect, url_for, session, flash
 from model import db, app, User, Company, Energy, Waste, BusinessTravel, Usage
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+
 
 ###Views###
 @app.route('/', methods=['GET','POST'])
@@ -19,7 +22,7 @@ def index():
 
                 return redirect(url_for('dashboard'))
             else:
-                return render_template('index.html', error='Invalid user')
+                return render_template('index.html', error='Please check your email and password.')
 
     return render_template('index.html')
 
@@ -42,10 +45,28 @@ def register():
 
 @app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
+
+    # Get the current date and time
+    thisMonth = datetime.now()
+
+    # Get the current month number (as a string)
+    thisMonthNum = thisMonth.strftime("%m")
+    print(f"Current Month: {thisMonthNum}")
+
+    # Calculate the previous month using relativedelta
+    lastMonth = thisMonth - relativedelta(months=1)
+    lastMonthNum = lastMonth.strftime("%m")
+    print(f"Last Month: {lastMonthNum}")
+    
     if session['name']:
         with app.app_context():
             user = User.query.filter_by(email = session['email']).first()
-        return render_template('dashboard.html', user=user)
+            companies = Company.query.all()
+
+            record = db.session.query(Company, Usage).join(Usage, Usage.company_id == Company.id).filter(Usage.month == lastMonthNum).all()
+            print(record)
+
+    return render_template('dashboard.html', user=user, companies=companies, record= record)
 
 @app.route('/logout')
 def logout():
@@ -134,6 +155,7 @@ def cal_energyusage():
                 db.session.add(energyUsage)
 
                 db.session.commit()
+            flash('Your calculated result has been saved successfully.', 'success')
 
         return redirect(url_for('cal_energyusage'))
     return render_template('cal_energyusage.html', user=user, companies=companies)
@@ -148,8 +170,63 @@ def cal_waste():
             companies = Company.query.all()
     
     if request.method == 'POST':
-        pass
+        month = int(request.form['month'])
+        year = int(request.form['year'])
+        company_id = int(request.form['company'])
+        g_waste = float(request.form['gen_waste'])
+        r_waste = float(request.form['rec_waste'])
+        waste_result = float(request.form['resultFootPrint'])
+        print(month)
+        print(year)
+        print(company_id)
+        print(f'This is gen waste {g_waste}')
+        print(r_waste)
+        print(waste_result)
 
+        with app.app_context():
+            usage_ID = 0
+            waste_ID = 0
+
+            queryUsage = Usage.query.filter_by(company_id=company_id, month=month, year=year)
+            recordUsage = queryUsage.all()
+
+            waste = Waste.query.filter_by(company_id=company_id, month=month, year=year)
+            recordWaste = waste.all()
+
+            for r in recordUsage:
+                usage_ID = r.id
+            
+            for e in recordWaste:
+                waste_ID = e.id
+
+            #usage table add and update
+            if usage_ID == 0:
+                new_Usage = Usage(waste = waste_result, energy=0.0, fuel= 0.0, month=month, year=year, company_id=company_id)
+                db.session.add(new_Usage)
+
+                db.session.commit()
+            else:
+                usage = Usage.query.get(usage_ID)
+                usage.waste = waste_result
+                db.session.add(usage)
+
+                db.session.commit()
+            
+            #Energy Usage table add and update
+            if(waste_ID == 0):
+                new_Waste = Waste(month = month, year = year, g_waste = g_waste, r_waste = r_waste, company_id=company_id)
+                db.session.add(new_Waste)
+
+                db.session.commit()
+            else:
+                waste_Update = Waste.query.get(waste_ID)
+                waste_Update.g_waste = g_waste
+                waste_Update.r_waste = r_waste
+                db.session.add(waste_Update)
+
+                db.session.commit()
+            flash('Your calculated result has been saved successfully.', 'success')
+        return redirect(url_for('cal_waste'))
     return render_template('cal_waste.html', user=user, companies=companies)
 
 ###route business travel calculation page
@@ -162,8 +239,63 @@ def cal_b_travel():
             companies = Company.query.all()
     
     if request.method == 'POST':
-        pass
+        month = int(request.form['month'])
+        year = int(request.form['year'])
+        company_id = int(request.form['company'])
+        travel = float(request.form['b_travel'])
+        fuel = float(request.form['fuel_eff'])
+        bTravel_result = float(request.form['resultFootPrint'])
+        print(month)
+        print(year)
+        print(company_id)
+        print(travel)
+        print(fuel)
+        print(bTravel_result)
 
+        with app.app_context():
+            usage_ID = 0
+            bTravel_ID = 0
+
+            queryUsage = Usage.query.filter_by(company_id=company_id, month=month, year=year)
+            recordUsage = queryUsage.all()
+
+            bTravel = BusinessTravel.query.filter_by(company_id=company_id, month=month, year=year)
+            recordbTravel = bTravel.all()
+
+            for r in recordUsage:
+                usage_ID = r.id
+            
+            for e in recordbTravel:
+                bTravel_ID = e.id
+
+            #usage table add and update
+            if usage_ID == 0:
+                new_Usage = Usage(fuel = bTravel_result, energy=0.0, waste= 0.0, month=month, year=year, company_id=company_id)
+                db.session.add(new_Usage)
+
+                db.session.commit()
+            else:
+                usage = Usage.query.get(usage_ID)
+                usage.fuel = bTravel_result
+                db.session.add(usage)
+
+                db.session.commit()
+            
+            #Energy Usage table add and update
+            if(bTravel_ID == 0):
+                new_bTravel = BusinessTravel(month = month, year = year, b_travel = travel, avg_fuel = fuel, company_id=company_id)
+                db.session.add(new_bTravel)
+
+                db.session.commit()
+            else:
+                bTravel_Update = Waste.query.get(bTravel_ID)
+                bTravel_Update.b_travel = travel
+                bTravel_Update.avg_fuel = fuel
+                db.session.add(bTravel_Update)
+
+                db.session.commit()
+            flash('Your calculated result has been saved successfully.', 'success')
+        return redirect(url_for('cal_b_travel'))
     return render_template('cal_b_travel.html', user=user, companies=companies)
 
 ###route add company page

@@ -50,6 +50,7 @@
                         <label for="year">Year</label>
                         <select name="year" class="form-control" id="w_year">
                           <option selected>Choose...</option>
+                          <option value="2023">2023</option>
                           <option value="2024">2024</option>
                           <option value="2025">2025</option>
                           <option value="2026">2026</option>
@@ -120,7 +121,13 @@
         <input type="hidden" id="hiddenField" name="resultFootPrint" value="">
       </div>
     </div>
-
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <p class="flash-class-success">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
 </div>
 
 </div>
@@ -135,7 +142,7 @@
       var rec_waste = document.getElementById('rec_waste').value;
 
       // Calculate total carbon footprint (as an example, assuming simple conversion rates)
-      var wasteResult = (gen_waste * (12)* 0.57) - ((rec_waste * (1)) / 100) * ((gen_waste) * 12); // Placeholder formula
+      var wasteResult = (gen_waste * 0.57) - ((rec_waste * gen_waste) / 100); // Placeholder formula
 
       //var totalCarbonFootprint = (electricityBill * 0.0005) + (gasBill * 0.0053) + (fuelBill * 2.32); // Placeholder formula
 
@@ -143,7 +150,7 @@
       document.getElementById('resultGenWaste').textContent = gen_waste + " kg";
       document.getElementById('resultRecWaste').textContent = rec_waste + " %"
       document.getElementById('totalFootprint').textContent = wasteResult.toFixed(2);
-      document.getElementById('hiddenField').value = wasteResult
+      document.getElementById('hiddenField').value = wasteResult.toFixed(2);
 
       document.getElementById('btn_Save').disabled = false;
     }

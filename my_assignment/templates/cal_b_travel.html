@@ -50,6 +50,7 @@
                         <label for="year">Year</label>
                         <select name="year" class="form-control" id="bt_year">
                           <option selected>Choose...</option>
+                          <option value="2023">2023</option>
                           <option value="2024">2024</option>
                           <option value="2025">2025</option>
                           <option value="2026">2026</option>
@@ -120,7 +121,13 @@
         <input type="hidden" id="hiddenField" name="resultFootPrint" value="">
       </div>
     </div>
-
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <p class="flash-class-success">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
 </div>
 
 </div>
@@ -134,7 +141,7 @@
       var fEfficency = document.getElementById('fuel_eff').value;
 
       // Calculate total carbon footprint (as an example, assuming simple conversion rates)
-      var b_travelResult = (bTravel) * (1 / fEfficency) * (2.31); // Placeholder formula
+      var b_travelResult = (bTravel) * (1 / fEfficency) * (2.31);
 
       //var totalCarbonFootprint = (electricityBill * 0.0005) + (gasBill * 0.0053) + (fuelBill * 2.32); // Placeholder formula
 
@@ -142,7 +149,7 @@
       document.getElementById('result_bTravel').textContent = bTravel + " km";
       document.getElementById('result_fEff').textContent = fEfficency + " L/100"
       document.getElementById('totalFootprint').textContent = b_travelResult.toFixed(2);
-      document.getElementById('hiddenField').value = b_travelResult
+      document.getElementById('hiddenField').value = b_travelResult.toFixed(2);
 
       document.getElementById('btn_Save').disabled = false;
     }

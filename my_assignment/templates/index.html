@@ -127,8 +127,10 @@ a{
         <label for="password">Password</label>
         <input type="password" class="form-control" placeholder="Enter your password" id="v_password" name="password">
         <span id="password-error" class="error-message"></span>
+        <span class="error-message" id="userError">{{ error }}</span>
 
         <button type="submit">Log In</button>
+        
 
         <label style="text-align: center;">Don't have an account? <a href="/register">Register User</a></label>
         
@@ -159,12 +161,22 @@ a{
 
         if (password === "") {
             passwordError.textContent =
-                "Please enter a password";
+                "Please enter a password.";
             isValid = false;
         }
 
         return isValid;
     }
+
+    const email_input = document.getElementById("v_email");
+    const span_userError = document.getElementById("userError");
+    email_input.addEventListener("input", () =>{
+        if(email_input.value.trim() !== ""){
+            span_userError.textContent = '';
+            span_userError.style.pointerEvents='none';
+            
+        }
+    });
     </script>
 </body>
 </html>

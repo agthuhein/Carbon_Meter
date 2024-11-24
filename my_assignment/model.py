@@ -129,7 +129,7 @@ class Waste(db.Model):
     def __init__(self, month, year, g_waste, r_waste, company_id):
         self.month = month
         self.year = year
-        self.e_bill = g_waste
+        self.g_waste = g_waste
         self.r_waste = r_waste
         self.company_id = company_id
 

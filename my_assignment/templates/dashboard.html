@@ -6,8 +6,35 @@
 {% endblock %}
 
 {% block content %}
-<h1 class="mt-4" style="margin-bottom: 20px;">Dashboard</h1>
-
+<form method="POST">
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <h1 class="mt-4" style="margin-bottom: 20px;">Dashboard</h1>
+        </div>
+        <div class="form-group col-md-2" style="margin-top: 40px;">
+                <select name="month" class="form-control" id="bt_month">
+                <option selected value="1">Last month</option>
+                <option value="3">Last 3 months</option>
+                <option value="6">Last 6 months</option>
+                <option value="9">Last 9 months</option>
+                <option value="12">Last year</option>
+            </select>
+        </div>
+        <div class="form-group col-md-3" style="margin-top: 40px;">
+            <select name="company" class="form-control" id="bt_company">
+                <option selected>All companies</option>
+                {% for company in companies %}
+                <option value="{{company.id}}">{{ company.name }}</option>
+                {% endfor %}
+                </select>
+        </div>
+        <div style="margin-top: 40px;">
+            <input type="submit" value="Search" class="btn btn-primary btn-md">
+        </div>
+            
+    </div>
+</form>
+  <!--Chart and Table start-->
 <div class="row">
     <div class="col-lg-6">
         <div class="card mb-4">
@@ -37,65 +64,76 @@
         <table id="datatablesSimple">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Position</th>
-                    <th>Office</th>
-                    <th>Age</th>
-                    <th>Start date</th>
-                    <th>Salary</th>
+                    <th>Company Name</th>
+                    <th>Sector</th>
+                    <th>Energy Usage <i style="opacity: 0.7;">(kgCO2)</i></th>
+                    <th>Waste <i style="opacity: 0.7;">(kgCO2)</i></th>
+                    <th>Business Travel <i style="opacity: 0.7;">(kgCO2)</i></th>
+                    <th>Month</th>
+                    <th>Year</th>
                 </tr>
             </thead>
             <tfoot>
                 <tr>
-                    <th>Name</th>
-                    <th>Position</th>
-                    <th>Office</th>
-                    <th>Age</th>
-                    <th>Start date</th>
-                    <th>Salary</th>
+                    <th>Company Name</th>
+                    <th>Sector</th>
+                    <th>Energy Usage <i style="opacity: 0.7;">(kgCO2)</i></th>
+                    <th>Waste <i style="opacity: 0.7;">(kgCO2)</i></th>
+                    <th>Business Travel <i style="opacity: 0.7;">(kgCO2)</i></th>
+                    <th>Month</th>
+                    <th>Year</th>
                 </tr>
             </tfoot>
             <tbody>
+                {% for company, usage in record %}
                 <tr>
-                    <td>Tiger Nixon</td>
-                    <td>System Architect</td>
-                    <td>Edinburgh</td>
-                    <td>61</td>
-                    <td>2011/04/25</td>
-                    <td>$320,800</td>
+                    <td>{{ company.name }}</td>
+                    <td>{{ company.sector }}</td>
+                    <td>{{ usage.energy }}</td>
+                    <td>{{ usage.waste }}</td>
+                    <td>{{ usage.fuel }}</td>
+                    <td>
+                        {% if usage.month == 1 %}
+                            January
+                        {% endif %}
+                        {% if usage.month == 2 %}
+                            February
+                        {% endif %}
+                        {% if usage.month == 3 %}
+                            March
+                        {% endif %}
+                        {% if usage.month == 4 %}
+                            April
+                        {% endif %}
+                        {% if usage.month == 5 %}
+                            May
+                        {% endif %}
+                        {% if usage.month == 6 %}
+                            June
+                        {% endif %}
+                        {% if usage.month == 7 %}
+                            July
+                        {% endif %}
+                        {% if usage.month == 8 %}
+                            August
+                        {% endif %}
+                        {% if usage.month == 9 %}
+                            September
+                        {% endif %}
+                        {% if usage.month == 10 %}
+                            October
+                        {% endif %}
+                        {% if usage.month == 11 %}
+                            November
+                        {% endif %}
+                        {% if usage.month == 12 %}
+                            December
+                        {% endif %}
+                    </td>
+                    <td>{{ usage.year}}</td>
+
                 </tr>
-                <tr>
-                    <td>Garrett Winters</td>
-                    <td>Accountant</td>
-                    <td>Tokyo</td>
-                    <td>63</td>
-                    <td>2011/07/25</td>
-                    <td>$170,750</td>
-                </tr>
-                <tr>
-                    <td>Ashton Cox</td>
-                    <td>Junior Technical Author</td>
-                    <td>San Francisco</td>
-                    <td>66</td>
-                    <td>2009/01/12</td>
-                    <td>$86,000</td>
-                </tr>
-                <tr>
-                    <td>Cedric Kelly</td>
-                    <td>Senior Javascript Developer</td>
-                    <td>Edinburgh</td>
-                    <td>22</td>
-                    <td>2012/03/29</td>
-                    <td>$433,060</td>
-                </tr>
-                <tr>
-                    <td>Airi Satou</td>
-                    <td>Accountant</td>
-                    <td>Tokyo</td>
-                    <td>33</td>
-                    <td>2008/11/28</td>
-                    <td>$162,700</td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
