@@ -138,4 +138,36 @@
         </table>
     </div>
 </div>
+<input type="hidden" id="energy" name="resultFootPrint" value="{{ e }}">
+<input type="hidden" id="waste" name="resultFootPrint" value="{{ w }}">
+<input type="hidden" id="travel" name="resultFootPrint" value="{{ t }}">
+<label>{{ e }}</label>
+<label>{{ w }}</label>
+<label>{{ w }}</label>
+{% endblock %}
+
+{% block js %}
+<script>
+    // Set new default font family and font color to mimic Bootstrap's default styling
+Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+Chart.defaults.global.defaultFontColor = '#292b2c';
+
+energy = document.getElementById('energy').value;
+waste = document.getElementById('waste').value;
+travel = document.getElementById('travel').value;
+
+// Pie Chart Example
+var ctx = document.getElementById("myPieChart");
+var myPieChart = new Chart(ctx, {
+  type: 'pie',
+  data: {
+    labels: ["Energy Usage", "Business Travel", "Waste"],
+    datasets: [{
+      data: [energy, waste, travel],
+      backgroundColor: ['#007bff', '#ffc107', '#28a745'],
+    }],
+  },
+});
+
+</script>
 {% endblock %}

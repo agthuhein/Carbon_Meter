@@ -64,23 +64,20 @@ def dashboard():
             companies = Company.query.all()
 
             record = db.session.query(Company, Usage).join(Usage, Usage.company_id == Company.id).filter(Usage.month == lastMonthNum).all()
+            total = []
+            company_name = []
 
-            p_usage = Usage.query.filter(Usage.month == lastMonthNum).all()
-            e = 0.0
-            w = 0.0
-            t = 0.0
-            for p in p_usage:
-                e += p.energy
-                w += p.waste
-                t += p.fuel
+            for c, u in record:
+                company_name.append(c.name)
+                total.append(u.energy + u.waste + u.fuel)
+  
+
+            print(total)
+            print(company_name)
             
-            #print(p_usage)
-            print(e)
-            print(w)
-            print(t)
-            #print(record)
 
-    return render_template('dashboard.html', user=user, companies=companies, record= record, e=e, w=w, t=t)
+
+    return render_template('dashboard.html', user=user, companies=companies, record= record, total= total, company_name=company_name)
 
 @app.route('/logout')
 def logout():

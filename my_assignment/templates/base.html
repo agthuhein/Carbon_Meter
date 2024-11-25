@@ -97,10 +97,13 @@
         <script src="{{ url_for('static', filename='js/chart-area-demo.js') }}"></script>
         
         <script src="{{ url_for('static', filename='js/chart-bar-demo.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/chart-pie-demo.js') }}"></script>
+
         <script src="{{ url_for('static', filename='js/simple-datatables.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/datatables-simple-demo.js') }}"></script>
         <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+        {% block js %}
+
+        {% endblock %}
     </body>
 
 </html>
