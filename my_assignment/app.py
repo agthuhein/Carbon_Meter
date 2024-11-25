@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, url_for, session, flash
+from flask import Flask, request, render_template, redirect, url_for, session, flash, jsonify
 from model import db, app, User, Company, Energy, Waste, BusinessTravel, Usage
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
@@ -57,16 +57,30 @@ def dashboard():
     lastMonth = thisMonth - relativedelta(months=1)
     lastMonthNum = lastMonth.strftime("%m")
     print(f"Last Month: {lastMonthNum}")
-    
+
     if session['name']:
         with app.app_context():
             user = User.query.filter_by(email = session['email']).first()
             companies = Company.query.all()
 
             record = db.session.query(Company, Usage).join(Usage, Usage.company_id == Company.id).filter(Usage.month == lastMonthNum).all()
-            print(record)
 
-    return render_template('dashboard.html', user=user, companies=companies, record= record)
+            p_usage = Usage.query.filter(Usage.month == lastMonthNum).all()
+            e = 0.0
+            w = 0.0
+            t = 0.0
+            for p in p_usage:
+                e += p.energy
+                w += p.waste
+                t += p.fuel
+            
+            #print(p_usage)
+            print(e)
+            print(w)
+            print(t)
+            #print(record)
+
+    return render_template('dashboard.html', user=user, companies=companies, record= record, e=e, w=w, t=t)
 
 @app.route('/logout')
 def logout():
