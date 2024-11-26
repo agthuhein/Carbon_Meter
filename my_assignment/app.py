@@ -1,7 +1,8 @@
-from flask import Flask, request, render_template, redirect, url_for, session, flash, jsonify
+from flask import Flask, request, render_template, redirect, url_for, session, flash, jsonify, json
 from model import db, app, User, Company, Energy, Waste, BusinessTravel, Usage
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+import random
 
 
 ###Views###
@@ -42,42 +43,6 @@ def register():
         return redirect(url_for('index'))
 
     return render_template('register.html')
-
-@app.route('/dashboard', methods=['GET', 'POST'])
-def dashboard():
-
-    # Get the current date and time
-    thisMonth = datetime.now()
-
-    # Get the current month number (as a string)
-    thisMonthNum = thisMonth.strftime("%m")
-    print(f"Current Month: {thisMonthNum}")
-
-    # Calculate the previous month using relativedelta
-    lastMonth = thisMonth - relativedelta(months=1)
-    lastMonthNum = lastMonth.strftime("%m")
-    print(f"Last Month: {lastMonthNum}")
-
-    if session['name']:
-        with app.app_context():
-            user = User.query.filter_by(email = session['email']).first()
-            companies = Company.query.all()
-
-            record = db.session.query(Company, Usage).join(Usage, Usage.company_id == Company.id).filter(Usage.month == lastMonthNum).all()
-            total = []
-            company_name = []
-
-            for c, u in record:
-                company_name.append(c.name)
-                total.append(u.energy + u.waste + u.fuel)
-  
-
-            print(total)
-            print(company_name)
-            
-
-
-    return render_template('dashboard.html', user=user, companies=companies, record= record, total= total, company_name=company_name)
 
 @app.route('/logout')
 def logout():
@@ -346,6 +311,125 @@ def about():
 def clear_session_result():
     session.pop('result', None)
     return jsonify({"message": "Session result removed"}), 200
+
+@app.route('/dashboard')
+def dashboard():
+     if session['name']:
+        with app.app_context():
+            user = User.query.filter_by(email = session['email']).first()
+            companies = Company.query.all()
+        return render_template('dashboard.html', user=user, companies=companies)
+
+@app.route('/get_data', methods=['GET'])
+def get_data():
+    thisMonth = datetime.now()
+    thisMonthNum = thisMonth.strftime("%m")
+    lastMonth = thisMonth - relativedelta(months=1)
+    lastMonthNum = lastMonth.strftime("%m")
+
+    with app.app_context():
+
+            record = db.session.query(Company, Usage).join(Usage, Usage.company_id == Company.id).filter(Usage.month == lastMonthNum).all()
+            total = []
+            company_name = []
+            color = []
+
+            for c, u in record:
+                company_name.append(c.name)
+                t = round((u.energy + u.waste + u.fuel),2)
+                total.append(t)
+                color.append(get_random_rgb())
+
+            pie_data = {"labels": company_name, "values": total, "color": color, "label": "kgCO2FD"}
+            return jsonify(pie_data)
+
+@app.route('/get_table_data', methods=['GET'])
+def get_table_data():
+    thisMonth = datetime.now()
+    thisMonthNum = thisMonth.strftime("%m")
+    lastMonth = thisMonth - relativedelta(months=1)
+    lastMonthNum = lastMonth.strftime("%m")
+
+    with app.app_context():
+        t_record = db.session.query(Company, Usage).join(Usage, Usage.company_id == Company.id).filter(Usage.month == lastMonthNum).all()
+        comp_name = []
+        comp_sect = []
+        energy = []
+        waste = []
+        fuel = []
+        tableData = []
+    
+        for c, u in t_record:
+            comp_name.append(c.name)
+            comp_sect.append(c.sector)
+            energy.append(u.energy)
+            waste.append(u.waste)
+            fuel.append(u.fuel)
+            eachCompany = {"name": c.name, "sector": c.sector, "energy": u.energy, "waste": u.waste, "fuel": u.fuel}
+            tableData.append(eachCompany)
+        
+        t_data = {"comp_name": comp_name, "sector": comp_sect, "energy": energy, "waste": waste, "fuel": fuel}
+
+        print(t_data)
+    return jsonify(tableData)
+
+def get_random_rgb():
+    return "#{:06x}".format(random.randint(0, 0xFFFFFF))
+##Get Dashboard Data
+def get_dashboard_data(time_range):
+
+    # Get the current date and time
+    thisMonth = datetime.now()
+
+    # Get the current month number (as a string)
+    thisMonthNum = thisMonth.strftime("%m")
+    print(f"Current Month: {thisMonthNum}")
+
+    # Calculate the previous month using relativedelta
+    lastMonth = thisMonth - relativedelta(months=1)
+    lastMonthNum = lastMonth.strftime("%m")
+    print(f"Last Month: {lastMonthNum}")
+    current_date = datetime.now()
+
+    if time_range == "last_3_month":
+        with app.app_context():
+            user = User.query.filter_by(email = session['email']).first()
+            companies = Company.query.all()
+
+            record = db.session.query(Company, Usage).join(Usage, Usage.company_id == Company.id).filter(Usage.month == lastMonthNum).all()
+            total = []
+            company_name = []
+            color = []
+
+            for c, u in record:
+                company_name.append(c.name)
+                t = round((u.energy + u.waste + u.fuel),2)
+                total.append(t)
+                color.append(get_random_rgb())
+
+            pie_data = {"labels": company_name, "values": total, "color": color, "label": "kgCO2TT"}
+        return pie_data
+    elif time_range == "last_month":
+        return {"title": "Last 3 Month"}
+    elif time_range == "last_6_month":
+        return {"title": "Last 3 Month"}
+    else:
+        return {"title": "Unknown Range"}
+
+@app.route('/update_dashboard', methods=["GET","POST"])
+def update_dashboard():
+    time_range = request.json.get("selectedMonth")
+    jdata = get_dashboard_data(time_range)
+    return jdata
+
+def get_last_three_months_with_year():
+    today = datetime.today()
+    last_three_months = [
+        ((today - relativedelta(months=i)).year, (today - relativedelta(months=i)).month)
+        for i in range(1, 4)
+    ]
+    return last_three_months
+
 
 if __name__ == "__main__":
     app.run(debug=True)
