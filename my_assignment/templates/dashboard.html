@@ -12,10 +12,10 @@
             <h1 class="mt-4" style="margin-bottom: 20px;">Dashboard</h1>
         </div>
         <div class="form-group col-md-2" style="margin-top: 40px;">
-            <select name="month" class="form-control" id="timeRangeSelect" onchange="monthChange()">
+            <select name="month" class="form-control" id="timeRangeSelect">
             <option selected value="last_month">Last month</option>
-            <option value="last_3_month">Last 3 months</option>
-            <option value="last_6_month">Last 6 months</option>
+            <option value="last_3_months">Last 3 months</option>
+            <option value="last_6_months">Last 6 months</option>
         </select>
 </div>
 <div class="form-group col-md-3" style="margin-top: 40px;">
@@ -61,6 +61,8 @@
                 <th>Energy</th>
                 <th>Waste</th>
                 <th>Business Travel</th>
+                <th>Month</th>
+                <th>Year</th>
             </tr>
         </thead>
         <tbody>
@@ -81,23 +83,6 @@
 let myChart;
 let myLineChart;
 
-const testData = [
-        {
-            name: "Shell", 
-            sector: "Oil and Gas", 
-            energy: 2041.76, 
-            fuel: 2887.5, 
-            waste: 19847.16
-        },
-        {
-            name: "Exxon", 
-            sector: "Oil and Gas", 
-            energy: 1500.50, 
-            fuel: 2500.00, 
-            waste: 16000.00
-        }
-    ];
-
 function fetchDataAndUpdateChart() {
     fetch('/get_data', {
     method: 'GET',
@@ -113,6 +98,7 @@ function fetchDataAndUpdateChart() {
       return response.json(); // Parse the JSON data from the response
     })
     .then((data) => {
+
         if (myChart) {
             myChart.data.labels = data.labels;  // Update the labels
             myChart.data.label = data.label;
@@ -182,7 +168,7 @@ function populateTable(data){
             console.log("Processing item:", item);
 
             // Check if the necessary fields exist in the item
-            if (!item.name || !item.sector || item.energy === undefined || item.fuel === undefined || item.waste === undefined) {
+            if (!item.name || !item.sector || item.energy === undefined || item.fuel === undefined || item.waste === undefined || !item.month || !item.year) {
                 console.error('Missing data for item:', item);
             }
 
@@ -190,15 +176,18 @@ function populateTable(data){
             row.append('<td>' + item.name + '</td>');
             row.append('<td>' + item.sector + '</td>');
             row.append('<td>' + item.energy.toFixed(2) + '</td>');
-            row.append('<td>' + item.fuel.toFixed(2) + '</td>');
             row.append('<td>' + item.waste.toFixed(2) + '</td>');
+            row.append('<td>' + item.fuel.toFixed(2) + '</td>');
+            row.append('<td>' + item.month + '</td>');
+            row.append('<td>' + item.year + '</td>');
             tbody.append(row);
+            
         });
 
-        // Reinitialize DataTable to apply sorting, paging, etc.
-        if ($.fn.dataTable.isDataTable('#datatablesSimple')) {
-            $('#datatablesSimple').DataTable().clear().destroy();  // Clear the previous DataTable instance
-        }
+        //Reinitialize DataTable to apply sorting, paging, etc.
+        // if ($.fn.dataTable.isDataTable('#datatablesSimple')) {
+        //     $('#datatablesSimple').DataTable().clear().destroy();  // Clear the previous DataTable instance
+        // }
         $('#datatablesSimple').DataTable();  // Initialize DataTable
         
     }
@@ -258,8 +247,8 @@ window.onload = function() {
         yAxes: [{
             ticks: {
             min: 0,
-            max: 100000,
-            maxTicksLimit: 12
+            max: 200000,
+            maxTicksLimit: 24
             },
             gridLines: {
             display: true
@@ -277,6 +266,212 @@ window.onload = function() {
     
     
 }
+// function monthChange()
+// {
+//     monthChange = document.getElementById("timeRangeSelect").value;
+    
+//     if(monthChange === "last_month")
+//     {
+//         alert("last months")
+//     }
+//     if(monthChange === "last_3_months")
+//     {
+//         alert("three months")
+//     }
+//     if(monthChange === "last_6_months")
+//     {
+//         alert("six months")
+//     }
+    
+// }
+function fetchTableDataL3M() {
+    fetch('/get_table_data_l3m', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json', // Ensures the server knows you're expecting JSON
+    },
+  })
+    .then((response) => {
+        console.log(response)
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json(); // Parse the JSON data from the response
+    })
+    .then((data) => {
+        //populateTable(data);
+        console.log("Htwat Lar Table")
+        console.log(data); // Use the data as needed
+        populateTable(data);
+
+    })
+    .catch((error) => {
+      console.error('Error:', error); // Handle errors
+    });
+
+}
+
+//table 6 months
+function fetchTableDataL6M() {
+    fetch('/get_table_data_l6m', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json', // Ensures the server knows you're expecting JSON
+    },
+  })
+    .then((response) => {
+        console.log(response)
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json(); // Parse the JSON data from the response
+    })
+    .then((data) => {
+        //populateTable(data);
+        console.log("Htwat Lar Table")
+        console.log(data); // Use the data as needed
+        populateTable(data);
+
+    })
+    .catch((error) => {
+      console.error('Error:', error); // Handle errors
+    });
+
+}
+
+
+//
+const m_selectBox = document.getElementById('timeRangeSelect')
+m_selectBox.addEventListener('change', (event) =>{
+    monthChange = document.getElementById("timeRangeSelect").value;
+    company = document.getElementById("bt_company").value;
+    
+    if(monthChange === "last_month" && company === "0")
+    {
+        fetch('/get_data', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json', // Ensures the server knows you're expecting JSON
+            },
+        })
+            .then((response) => {
+                console.log(response)
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json(); // Parse the JSON data from the response
+            })
+            .then((data) => {
+
+                if (myChart) {
+                    myChart.data.labels = data.labels;  // Update the labels
+                    myChart.data.label = data.label;
+                    myChart.data.datasets[0].data = data.values;  // Update the values
+                    myChart.data.datasets[0].backgroundColor = data.color;  // Update the colors
+
+                    // Update the chart after data change
+                    myChart.update();
+                }
+                if (myLineChart) {
+                    myLineChart.data.labels = data.labels;  // Update the labels
+                    myLineChart.data.label = data.label;
+                    myLineChart.data.datasets[0].data = data.values;  // Update the values
+                    myLineChart.data.datasets[0].backgroundColor = data.color;  // Update the colors
+                    myLineChart.update();
+                }
+                fetchTableData();
+                console.log(data); // Use the data as needed
+            })
+            .catch((error) => {
+                console.error('Error:', error); // Handle errors
+            });
+    }
+    if(monthChange === "last_3_months" && company === "0")
+    {
+        fetch('/calculate_l3_ac', {
+        method: 'GET',
+            headers: {
+                'Content-Type': 'application/json', // Ensures the server knows you're expecting JSON
+            },
+        })
+            .then((response) => {
+                console.log(response)
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json(); // Parse the JSON data from the response
+            })
+            .then((data) => {
+                const labels = data.map(item => item.labels);
+                const values = data.map(item => item.values);
+                const colors = data.map(item => item.color);
+
+                if (myChart) {
+                    myChart.data.labels = labels;  // Update the labels
+                    myChart.data.label = 'kgco2';
+                    myChart.data.datasets[0].data = values;  // Update the values
+                    myChart.data.datasets[0].backgroundColor = colors;  // Update the colors
+
+                    // Update the chart after data change
+                    myChart.update();
+                }
+                if (myLineChart) {
+                    myLineChart.data.labels = labels;  // Update the labels
+                    myLineChart.data.label = 'kgCO2';
+                    myLineChart.data.datasets[0].data = values;  // Update the values
+                    myLineChart.data.datasets[0].backgroundColor = colors;  // Update the colors
+                    myLineChart.update();
+                }
+                fetchTableDataL3M()
+            })
+            .catch((error) => {
+                console.error('Error:', error); // Handle errors
+            });
+    }
+    if(monthChange === "last_6_months" && company === "0")
+    {
+        fetch('/calculate_l6_ac', {
+        method: 'GET',
+            headers: {
+                'Content-Type': 'application/json', // Ensures the server knows you're expecting JSON
+            },
+        })
+            .then((response) => {
+                console.log(response)
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json(); // Parse the JSON data from the response
+            })
+            .then((data) => {
+                const labels = data.map(item => item.labels);
+                const values = data.map(item => item.values);
+                const colors = data.map(item => item.color);
+
+                if (myChart) {
+                    myChart.data.labels = labels;  // Update the labels
+                    myChart.data.label = 'kgco2';
+                    myChart.data.datasets[0].data = values;  // Update the values
+                    myChart.data.datasets[0].backgroundColor = colors;  // Update the colors
+
+                    // Update the chart after data change
+                    myChart.update();
+                }
+                if (myLineChart) {
+                    myLineChart.data.labels = labels;  // Update the labels
+                    myLineChart.data.label = 'kgCO2';
+                    myLineChart.data.datasets[0].data = values;  // Update the values
+                    myLineChart.data.datasets[0].backgroundColor = colors;  // Update the colors
+                    myLineChart.update();
+                }
+                // fetchTableDataL3M()
+                fetchTableDataL6M()
+            })
+            .catch((error) => {
+                console.error('Error:', error); // Handle errors
+            });
+    }
+});
 </script>
 {% endblock %}
 
