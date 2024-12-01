@@ -247,8 +247,8 @@ window.onload = function() {
         yAxes: [{
             ticks: {
             min: 0,
-            max: 100000,
-            maxTicksLimit: 10
+            max: 200000,
+            maxTicksLimit: 24
             },
             gridLines: {
             display: true
@@ -322,12 +322,15 @@ function fetchTableDataL6M() {
 }
 
 
-//Month type selection
+//
 const m_selectBox = document.getElementById('timeRangeSelect')
 m_selectBox.addEventListener('change', (event) =>{
     monthChange = document.getElementById("timeRangeSelect").value;
     company = document.getElementById("bt_company").value;
-    fetch(`/get_calc_data?selected_Month=${encodeURIComponent(monthChange)}&company=${encodeURIComponent(company)}`, {
+
+    if(monthChange === "last_month" && company === "0")
+    {
+        fetch('/get_data', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json', // Ensures the server knows you're expecting JSON
@@ -341,15 +344,51 @@ m_selectBox.addEventListener('change', (event) =>{
                 return response.json(); // Parse the JSON data from the response
             })
             .then((data) => {
-                var labels = data.map(item => item.labels);
-                var values = data.map(item => item.values);
-                var colors = data.map(item => item.color);
 
-                if(company != "0"){
-                    labels = data[0].labels;
-                    values = data[0].values;
-                    colors = data[0].color;
+                if (myChart) {
+                    myChart.data.labels = data.labels;  // Update the labels
+                    myChart.data.label = data.label;
+                    myChart.data.datasets[0].data = data.values;  // Update the values
+                    myChart.data.datasets[0].backgroundColor = data.color;  // Update the colors
+
+                    // Update the chart after data change
+                    myChart.update();
                 }
+                if (myLineChart) {
+                    myLineChart.data.labels = data.labels;  // Update the labels
+                    myLineChart.data.label = data.label;
+                    myLineChart.data.datasets[0].data = data.values;  // Update the values
+                    myLineChart.data.datasets[0].backgroundColor = data.color;  // Update the colors
+                    myLineChart.update();
+                }
+                fetchTableData();
+                console.log(data); // Use the data as needed
+            })
+            .catch((error) => {
+                console.error('Error:', error); // Handle errors
+            });
+    }
+    if(monthChange === "last_3_months" && company === "0")
+    {
+        // fetch('/calculate_l3_ac', {
+        fetch(`/calculate_l3_ac?selected_Month=${encodeURIComponent(monthChange)}&company=${encodeURIComponent(company)}`, {
+        method: 'GET',
+            headers: {
+                'Content-Type': 'application/json', // Ensures the server knows you're expecting JSON
+            },
+        })
+            .then((response) => {
+                console.log(response)
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json(); // Parse the JSON data from the response
+            })
+            .then((data) => {
+                const labels = data.map(item => item.labels);
+                const values = data.map(item => item.values);
+                const colors = data.map(item => item.color);
+
                 if (myChart) {
                     myChart.data.labels = labels;  // Update the labels
                     myChart.data.label = 'kgco2';
@@ -366,21 +405,16 @@ m_selectBox.addEventListener('change', (event) =>{
                     myLineChart.data.datasets[0].backgroundColor = colors;  // Update the colors
                     myLineChart.update();
                 }
-                // fetchTableData();
-                fetchCalcTableData();
-                console.log(data); // Use the data as needed
+                fetchTableDataL3M()
             })
             .catch((error) => {
                 console.error('Error:', error); // Handle errors
             });
-});
-///Company selection
-const c_selectBox = document.getElementById('bt_company')
-c_selectBox.addEventListener('change', (event) =>{
-    monthChange = document.getElementById("timeRangeSelect").value;
-    company = document.getElementById("bt_company").value;
-    fetch(`/get_calc_data?selected_Month=${encodeURIComponent(monthChange)}&company=${encodeURIComponent(company)}`, {
-            method: 'GET',
+    }
+    if(monthChange === "last_6_months" && company === "0")
+    {
+        fetch('/calculate_l6_ac', {
+        method: 'GET',
             headers: {
                 'Content-Type': 'application/json', // Ensures the server knows you're expecting JSON
             },
@@ -393,16 +427,9 @@ c_selectBox.addEventListener('change', (event) =>{
                 return response.json(); // Parse the JSON data from the response
             })
             .then((data) => {
-                console.log(data);
-                var labels = data.map(item => item.labels);
-                var values = data.map(item => item.values);
-                var colors = data.map(item => item.color);
-
-                if(company != "0"){
-                    labels = data[0].labels;
-                    values = data[0].values;
-                    colors = data[0].color;
-                }
+                const labels = data.map(item => item.labels);
+                const values = data.map(item => item.values);
+                const colors = data.map(item => item.color);
 
                 if (myChart) {
                     myChart.data.labels = labels;  // Update the labels
@@ -420,40 +447,14 @@ c_selectBox.addEventListener('change', (event) =>{
                     myLineChart.data.datasets[0].backgroundColor = colors;  // Update the colors
                     myLineChart.update();
                 }
-                console.log(data); // Use the data as needed
+                // fetchTableDataL3M()
+                fetchTableDataL6M()
             })
             .catch((error) => {
                 console.error('Error:', error); // Handle errors
             });
+    }
 });
-function fetchCalcTableData() {
-    monthChange = document.getElementById("timeRangeSelect").value;
-    company = document.getElementById("bt_company").value;
-    fetch(`/fetchCalcTableData?selected_Month=${encodeURIComponent(monthChange)}&company=${encodeURIComponent(company)}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json', // Ensures the server knows you're expecting JSON
-    },
-  })
-    .then((response) => {
-        console.log(response)
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return response.json(); // Parse the JSON data from the response
-    })
-    .then((data) => {
-        //populateTable(data);
-        console.log("Htwat Lar Table")
-        console.log(data); // Use the data as needed
-        populateTable(data);
-
-    })
-    .catch((error) => {
-      console.error('Error:', error); // Handle errors
-    });
-
-}
 </script>
 {% endblock %}
 
