@@ -18,8 +18,8 @@ The project aims to calculate carbon emissions for a company based on three key 
 - SQLite
 
 ### Installing
+Clone the repository
 
-1. Clone the repository
     git clone https://github.com/agthuhein/Carbon_Meter.git
     
 ## Install deendencies
