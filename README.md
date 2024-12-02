@@ -12,74 +12,48 @@ The project aims to calculate carbon emissions for a company based on three key 
 
 
 ## Prerequisites
+
+- HTML
+- CSS
+- Javascript
 - Python 3.12.7
 - Flask 3.0.3
 - SQLAlchemy 2.0.36
 - SQLite
 
 ## Installing
-1. Clone the repository
+
+Clone the repository
 
     git clone https://github.com/agthuhein/Carbon_Meter.git
     
-## Install deendencies
+## Install dependencies
+
     cd my_assignment
     pip install -r requirements.txt
 
 ## Running the application
+
     python app.py
 
-### Sample Tests
+### Let's get started
+# Views
+Login page inputs
 
-Explain what these tests test and why
+    Email Address
+    Password
 
-    Give an example
+Register page inputs
 
-### Style test
+    Name
+    Email Address
+    Password
 
-Checks if the best practices and the right coding style has been used.
+Dashboard page inputs
 
-    Give an example
-
-## Deployment
-
-Add additional notes to deploy this on a live system
-
-## Built With
-
-  - [Contributor Covenant](https://www.contributor-covenant.org/) - Used
-    for the Code of Conduct
-  - [Creative Commons](https://creativecommons.org/) - Used to choose
-    the license
-
-## Contributing
-
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code
-of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [Semantic Versioning](http://semver.org/) for versioning. For the versions
-available, see the [tags on this
-repository](https://github.com/PurpleBooth/a-good-readme-template/tags).
-
-## Authors
-
-  - **Billie Thompson** - *Provided README Template* -
-    [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of
-[contributors](https://github.com/PurpleBooth/a-good-readme-template/contributors)
-who participated in this project.
-
-## License
-
-This project is licensed under the [CC0 1.0 Universal](LICENSE.md)
-Creative Commons License - see the [LICENSE.md](LICENSE.md) file for
-details
-
-## Acknowledgments
-
-  - Hat tip to anyone whose code is used
-  - Inspiration
-  - etc
+    Select (Last month, Last 3 months, Last 6 months)
+    Select (All Companies or Individual Company)
+    Export Button (Generate report in PDF format)
+    Pie Chart
+    Bar Chart
+    List of data in table format
