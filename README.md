@@ -98,6 +98,6 @@ Clone the repository
 
 - Brief explanation about the application
 
-### Logou
+### Logout
 
-- Log out from the user.
+- Log out from the user
