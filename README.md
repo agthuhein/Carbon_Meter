@@ -2,6 +2,7 @@
 
 The project aims to calculate carbon emissions for a company based on three key areas: energy usage, waste, and business travel. The calculations will be done monthly for each company. Additionally, an admin dashboard will display the results using pie charts, bar charts, and tables, showing the historical data for the past month, three months, and six months. This tool will help companies track and manage their carbon emissions over time.
 
+
 ## Key Functions
 - Carbon Emission Calculation: Calculates carbon emissions based on three main sectors — energy usage, waste, and business travel on a monthly basis for each company.
 - Admin Dashboard: Provides an overview of carbon emissions with visualizations such as pie charts and bar charts.
@@ -10,35 +11,26 @@ The project aims to calculate carbon emissions for a company based on three key 
 - Monthly Tracking: Provides the ability to track emissions month by month to identify trends over time.
 
 
-These instructions will give you a copy of the project up and running on
-your local machine for development and testing purposes. See deployment
-for notes on deploying the project on a live system.
-
 ### Prerequisites
-
-Requirements for the software and other tools to build, test and push 
-- [Example 1](https://www.example.com)
-- [Example 2](https://www.example.com)
+- Python 3.12.7
+- Flask 3.0.3
+- SQLAlchemy 2.0.36
+- SQLite
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development
-environment running
+1. Clone the repository
 
-Say what the step will be
+    git clone https://github.com/agthuhein/Carbon_Meter.git
 
-    Give the example
+2. Install deendencies
 
-And repeat
+    cd my_assignment
+    pip install -r requirements.txt
 
-    until finished
+## Running the application
 
-End with an example of getting some data out of the system or using it
-for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
+    python app.py
 
 ### Sample Tests
 
