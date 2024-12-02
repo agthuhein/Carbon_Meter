@@ -1,11 +1,14 @@
 # Carbon Meter
 
-One Paragraph of the project description
+The project aims to calculate carbon emissions for a company based on three key areas: energy usage, waste, and business travel. The calculations will be done monthly for each company. Additionally, an admin dashboard will display the results using pie charts, bar charts, and tables, showing the historical data for the past month, three months, and six months. This tool will help companies track and manage their carbon emissions over time.
 
-Initially appeared on
-[gist](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2). But the page cannot open anymore so that is why I have moved it here.
+## Key Functions
+- Carbon Emission Calculation: Calculates carbon emissions based on three main sectors — energy usage, waste, and business travel on a monthly basis for each company.
+- Admin Dashboard: Provides an overview of carbon emissions with visualizations such as pie charts and bar charts.
+- Historical Data Display: Shows historical carbon emission data for the past month, past three months, and past six months.
+- Data Tables: Displays detailed data in table format for easy tracking and comparison.
+- Monthly Tracking: Provides the ability to track emissions month by month to identify trends over time.
 
-## Getting Started
 
 These instructions will give you a copy of the project up and running on
 your local machine for development and testing purposes. See deployment
