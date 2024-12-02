@@ -7,27 +7,34 @@
 
 {% block content %}
 
+<canvas id="barChart" width="400" height="200" hidden></canvas>
+<canvas id="pieChart" width="400" height="200" hidden></canvas>
+
 <div class="form-row">
-        <div class="form-group col-md-6">
-            <h1 class="mt-4" style="margin-bottom: 20px;">Dashboard</h1>
-        </div>
-        <div class="form-group col-md-2" style="margin-top: 40px;">
+        
+    <div class="form-group col-md-6">
+        <h1 class="mt-4" style="margin-bottom: 20px;">Dashboard</h1>
+    </div>
+    <div class="form-group col-md-2" style="margin-top: 40px;">
             <select name="month" class="form-control" id="timeRangeSelect">
             <option selected value="last_month">Last month</option>
             <option value="last_3_months">Last 3 months</option>
             <option value="last_6_months">Last 6 months</option>
-        </select>
-</div>
-<div class="form-group col-md-3" style="margin-top: 40px;">
-    <select name="company" class="form-control" id="bt_company">
-        <option value="0" selected>All companies</option>
-        {% for company in companies %}
+            </select>
+    </div>
+    <div class="form-group col-md-3" style="margin-top: 40px;">
+        <select name="company" class="form-control" id="bt_company">
+            <option value="0" selected>All companies</option>
+                {% for company in companies %}
                 <option value="{{company.id}}">{{ company.name }}</option>
                 {% endfor %}
-                </select>
-</div>
-            
+        </select>
     </div>
+    <div class="form-group col-md-1" style="margin-top: 40px;">
+        <button id="btnExport" class="btn btn-primary btn-md">Export</button>
+    </div>
+</div>
+    
   <!--Chart and Table start-->
 <div class="row">
     <div class="col-lg-6">
@@ -58,9 +65,9 @@
             <tr>
                 <th>Company Name</th>
                 <th>Sector</th>
-                <th>Energy</th>
-                <th>Waste</th>
-                <th>Business Travel</th>
+                <th>Energy <i style="opacity: 0.5;">(kgCO2)</i></th>
+                <th>Waste <i style="opacity: 0.5;">(kgCO2)</i></th>
+                <th>Business Travel <i style="opacity: 0.5;">(kgCO2)</i></th>
                 <th>Month</th>
                 <th>Year</th>
             </tr>
@@ -70,7 +77,6 @@
             <!-- Rows will be inserted here -->
         </tbody>
     </table>
-    
 </div>
 
 {% endblock %}
@@ -78,6 +84,9 @@
 {% block js %}
 <link href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" rel="stylesheet">
 <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.26/jspdf.plugin.autotable.min.js"></script>
+
 <script>
 
 let myChart;
@@ -149,7 +158,10 @@ function fetchTableData() {
 }
 
 function populateTable(data){
-        
+                //Reinitialize DataTable to apply sorting, paging, etc.
+        if ($.fn.dataTable.isDataTable('#datatablesSimple')) {
+            $('#datatablesSimple').DataTable().clear().destroy();  // Clear the previous DataTable instance
+        }
         const tbody = $('#datatablesSimple tbody');
         tbody.empty();  // Clear existing table rows
 
@@ -184,14 +196,101 @@ function populateTable(data){
             
         });
 
-        //Reinitialize DataTable to apply sorting, paging, etc.
-        // if ($.fn.dataTable.isDataTable('#datatablesSimple')) {
-        //     $('#datatablesSimple').DataTable().clear().destroy();  // Clear the previous DataTable instance
-        // }
+
         $('#datatablesSimple').DataTable();  // Initialize DataTable
         
     }
-    
+
+    document.getElementById('btnExport').onclick = function() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const maxWidth = 85;  // Max width of the image (adjust as needed)
+        const maxHeight = 60;
+        
+        // Add Bar and Pie Charts to PDF side by side
+        monthChange = document.getElementById("timeRangeSelect");
+        company = document.getElementById("bt_company");
+
+        monthSelectedText = monthChange.options[monthChange.selectedIndex].text;
+        companySelectedText = company.options[company.selectedIndex].text;
+        doc.setFont('helvetica'); 
+        doc.setFontSize(14);
+        doc.text(monthSelectedText + " for " + companySelectedText, 10, 10 );
+
+        const pieChartImage = myChart.toBase64Image();
+        doc.setFontSize(12);
+        doc.text("Pie Chart:", 10, 20);
+        doc.addImage(pieChartImage, 'PNG', 10, 20, 100, 60);  // Bar chart on the left
+
+        const barChartImage = myLineChart.toBase64Image();
+        doc.setFontSize(12);
+        doc.text("Bar Chart:", 105, 20);
+        doc.addImage(barChartImage, 'PNG', 105, 30, 85, 60);  // Pie chart on the right
+
+            // Add table below charts
+        doc.setFontSize(12);    
+        doc.text("Table Data:", 10, 100);
+        const table = document.getElementById('datatablesSimple');
+        const rows = table.rows;
+        const data = [];
+
+        for(let i = 1; i< rows.length; i++){
+            const cells= rows[i].cells;
+
+            const rowData = {
+                company: cells[0].innerText,
+                sector: cells[1].innerText,
+                energy: cells[2].innerText,
+                waste: cells[3].innerText,
+                travel: cells[4].innerText,
+                month: cells[5].innerText,
+                year: cells[6].innerText
+            }
+            data.push(rowData);
+        }
+        const tableData = data.map(item => [
+            item.company,
+            item.sector,
+            item.energy,
+            item.waste,
+            item.travel,
+            item.month,
+            item.year
+        ]);
+
+        doc.autoTable({
+            startY: 105,
+            head: [['Company Name', 'Sector','Energy (kgCO2)', 'Waste (kgCO2)', 'Business Travel (kgCO2)', 'Month', 'Year']],
+            body: tableData,
+            theme: 'plain',
+            tableLineColor: [0,0,0],
+            headStyles: {
+                fontStyle: 'bold',  // Make the header row text bold
+                fillColor: null,    // Remove background color from the header
+                textColor: null,    // Keep text color black (default)
+            },
+            styles: {
+                fillColor: null,    // Remove row background colors
+                textColor: null,    // Keep row text color black (default)
+                lineColor: null,    // No borders between cells
+                lineWidth: 0,       // No cell borders
+                halign: 'left',     // Align text to the left for all columns
+            },
+            // Callback to draw underlines (bottom border) for rows
+            didDrawCell: function (data) {
+                // Add a black underline (bottom border) to each row (except the last one)
+                if (data.row.index !== tableData.length - 1) {
+                const y = data.cell.y + data.cell.height; // Bottom of the current row
+                doc.setDrawColor(0, 0, 0);  // Set the color to black
+                doc.setLineWidth(0.5);      // Set the line width for the underline
+                doc.line(data.cell.x, y, data.cell.x + data.cell.width, y); // Draw the line
+                }
+            }
+        });
+
+            // Save the PDF
+            doc.save('CarbonMeterReport.pdf');
+    }
 //Onload
 window.onload = function() {
     
@@ -366,7 +465,7 @@ m_selectBox.addEventListener('change', (event) =>{
                     myLineChart.data.datasets[0].backgroundColor = colors;  // Update the colors
                     myLineChart.update();
                 }
-                // fetchTableData();
+
                 fetchCalcTableData();
                 console.log(data); // Use the data as needed
             })
@@ -420,6 +519,7 @@ c_selectBox.addEventListener('change', (event) =>{
                     myLineChart.data.datasets[0].backgroundColor = colors;  // Update the colors
                     myLineChart.update();
                 }
+                fetchCalcTableData();
                 console.log(data); // Use the data as needed
             })
             .catch((error) => {
@@ -454,6 +554,33 @@ function fetchCalcTableData() {
     });
 
 }
+document.getElementById("exportBtn").onclick = function() {
+            var table = document.getElementById("datatablesSimple");
+            var canvasElements = [myChart.canvas, myLineChart.canvas];
+            var data = {
+                table: table.outerHTML,
+                charts: []
+            };
+
+            canvasElements.forEach(function(canvas) {
+                data.charts.push(canvas.toDataURL());  // Save chart as image
+            });
+
+            // Send data to Flask server
+            fetch("/export", {
+                method: "POST",
+                body: JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then(response => response.blob())
+              .then(blob => {
+                  const link = document.createElement("a");
+                  link.href = URL.createObjectURL(blob);
+                  link.download = "dashboard_export.pdf";
+                  link.click();
+              });
+        };
 </script>
 {% endblock %}
 
