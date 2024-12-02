@@ -22,7 +22,7 @@ The project aims to calculate carbon emissions for a company based on three key 
 1. Clone the repository
     git clone https://github.com/agthuhein/Carbon_Meter.git
     
-2. Install deendencies
+## Install deendencies
     cd my_assignment
     pip install -r requirements.txt
 
