@@ -11,14 +11,14 @@ The project aims to calculate carbon emissions for a company based on three key 
 - Monthly Tracking: Provides the ability to track emissions month by month to identify trends over time.
 
 
-### Prerequisites
+## Prerequisites
 - Python 3.12.7
 - Flask 3.0.3
 - SQLAlchemy 2.0.36
 - SQLite
 
-### Installing
-Clone the repository
+## Installing
+1. Clone the repository
 
     git clone https://github.com/agthuhein/Carbon_Meter.git
     
