@@ -36,24 +36,33 @@ Clone the repository
 
     python app.py
 
-### Let's get started
-# Views
-Login page inputs
+# Let's get started
+## Views
+### Login page inputs
 
-    Email Address
-    Password
+- Email Address
+- Password
 
-Register page inputs
+### Register page inputs
 
-    Name
-    Email Address
-    Password
+- Name
+- Email Address
+- Password
 
-Dashboard page inputs
+### Dashboard page inputs
 
-    Select (Last month, Last 3 months, Last 6 months)
-    Select (All Companies or Individual Company)
-    Export Button (Generate report in PDF format)
-    Pie Chart
-    Bar Chart
-    List of data in table format
+- Select (Last month, Last 3 months, Last 6 months)
+- Select (All Companies or Individual Company)
+- Export Button (Generate report in PDF format)
+- Pie Chart
+- Bar Chart
+- List of data in table format
+
+### Calculate \ Energy Usage calculation page
+
+- Select month
+- Select year
+- Select company (Add new link - To add a new company to calculate.)
+- Avg. monthly electricity bill (€)
+- Avg. monthly gas bill (€)
+- Avg. monthly fuel bill (€)
