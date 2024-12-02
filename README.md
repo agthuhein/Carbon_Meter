@@ -66,3 +66,38 @@ Clone the repository
 - Avg. monthly electricity bill (€)
 - Avg. monthly gas bill (€)
 - Avg. monthly fuel bill (€)
+- Calculate button (Click that button to get the result.)
+- Save button (After clicking calculate button, 'Save' button will be active. Click it to save the result into the database.)
+
+### Calculate \ Waste calculation page
+
+- Select month
+- Select year
+- Select company (Add new link - To add a new company to calculate.)
+- Monthly Generated Waste (in kg)
+- Monthly Recycled Waste (in %)
+- Calculate button (Click that button to get the result.)
+- Save button (After clicking calculate button, 'Save' button will be active. Click it to save the result into the database.)
+
+### Calculate \ Business travel calculation page
+
+- Select month
+- Select year
+- Select company (Add new link - To add a new company to calculate.)
+- Monthly Business Travel (km)
+- Avg. fuel efficiency(L/100 km)
+- Calculate button (Click that button to get the result.)
+- Save button (After clicking calculate button, 'Save' button will be active. Click it to save the result into the database.)
+
+### Company list page
+
+- List of companies in tabular format
+- New company link (To add a new company to calculate.)
+
+### About me page
+
+- Brief explanation about the application
+
+### Logou
+
+- Log out from the user.
