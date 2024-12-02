@@ -441,18 +441,105 @@ def get_calc_data():
         #print(result)
         return jsonify(result)
     
-    if month == 'last_month' and company != 0:
-        thisMonth = datetime.now()
-        thisMonthNum = thisMonth.strftime("%m")
-        lastMonth = thisMonth - relativedelta(months=1)
-        lastMonthNum = lastMonth.strftime("%m")
+    # if month == 'last_month' and company != 0:
+    #     thisMonth = datetime.now()
+    #     thisMonthNum = thisMonth.strftime("%m")
+    #     lastMonth = thisMonth - relativedelta(months=1)
+    #     t_month = lastMonth.strftime("%m")
 
-        with app.app_context():
+    #     with app.app_context():
 
-            records = db.session.query(Company.name, Company.sector, Usage.energy, Usage.waste, Usage.fuel).join(Usage, Usage.company_id == Company.id).filter(Usage.month == lastMonthNum, Usage.company_id == company_id).all()
-            #print(records)
+    #         records = db.session.query(Company.name, Company.sector, Usage.energy, Usage.waste, Usage.fuel).join(Usage, Usage.company_id == Company.id).filter(Usage.month == t_month, Usage.company_id == company_id).all()
+    #         #print(records)
             
+    #         for record in records:
+    #             company, sector, energy, waste, fuel = record
+
+    #             total_energy = total_energy + round(energy,2)
+    #             total_waste = total_waste + round(waste,2)
+    #             total_fuel = total_fuel + round(fuel,2)
+
+
+    #         result = [{"labels": ["Engery", "Fuel", "Waste"], "values": [total_energy, total_fuel, total_waste], "color": [get_random_rgb(),get_random_rgb(),get_random_rgb()],"label": "kgCO2"}]
+
+    #         #print(result)
+
+    #     return jsonify(result)
+    # if month == 'last_3_months' and company != 0:
+    #     three_months = get_last_three_months_with_year()
+    #     company_totals = {}
+    #     for m in three_months:
+    #         t_year, t_month = m
+        
+    #         with app.app_context():
+    #             records = db.session.query(Company.name, Company.sector, Usage.energy, Usage.waste, Usage.fuel).join(Usage, Usage.company_id == Company.id).filter(Usage.month == t_month, Usage.year == t_year, Usage.company_id == company_id).all()
+    #             print("Three months data of one company")
+    #             print(t_month)
+    #             print(company_id)
+    #             #print(records)
+
+    #             for record in records:
+    #                 print(record)
+    #                 company, sector, energy, waste, fuel = record
+
+    #                 total_energy = total_energy + round(energy,2)
+    #                 total_waste = total_waste + round(waste,2)
+    #                 total_fuel = total_fuel + round(fuel,2)
+
+
+    #         result = [{"labels": ["Engery", "Fuel", "Waste"], "values": [total_energy, total_fuel, total_waste], "color": [get_random_rgb(),get_random_rgb(),get_random_rgb()],"label": "kgCO2"}]
+
+    #         #print(result)
+
+    #     return jsonify(result)
+    # if month == 'last_6_months' and company != 0:
+    #     six_months = get_last_six_months_with_year()
+    #     company_totals = {}
+    #     for m in six_months:
+    #         t_year, t_month = m
+
+    #         with app.app_context():
+    #             records = db.session.query(Company.name, Company.sector, Usage.energy, Usage.waste, Usage.fuel).join(Usage, Usage.company_id == Company.id).filter(Usage.month == t_month, Usage.year == t_year, Usage.company_id == company_id).all()
+
+    #             for record in records:
+    #                 print(record)
+    #                 company, sector, energy, waste, fuel = record
+
+    #                 total_energy = total_energy + round(energy,2)
+    #                 total_waste = total_waste + round(waste,2)
+    #                 total_fuel = total_fuel + round(fuel,2)
+
+
+    #         result = [{"labels": ["Engery", "Fuel", "Waste"], "values": [total_energy, total_fuel, total_waste], "color": [get_random_rgb(),get_random_rgb(),get_random_rgb()],"label": "kgCO2"}]
+
+    #     return jsonify(result)
+    if company_id != 0:
+        t_month, t_year = 0
+        company_totals = {}
+
+        if month == 'last_month':
+            lastMonth = get_last_three_months_with_year()
+            company_totals = {}
+            for m in lastMonth:
+                t_year, t_month = m
+
+        elif month == 'last_3_months':
+            three_months = get_last_three_months_with_year()
+            company_totals = {}
+            for m in three_months:
+                t_year, t_month = m
+
+        else:
+            six_months = get_last_six_months_with_year()
+            company_totals = {}
+            for m in six_months:
+                t_year, t_month = m
+        
+        with app.app_context():
+            records = db.session.query(Company.name, Company.sector, Usage.energy, Usage.waste, Usage.fuel).join(Usage, Usage.company_id == Company.id).filter(Usage.month == t_month, Usage.year == t_year, Usage.company_id == company_id).all()
+
             for record in records:
+                #print(record)
                 company, sector, energy, waste, fuel = record
 
                 total_energy = total_energy + round(energy,2)
@@ -461,58 +548,8 @@ def get_calc_data():
 
 
             result = [{"labels": ["Engery", "Fuel", "Waste"], "values": [total_energy, total_fuel, total_waste], "color": [get_random_rgb(),get_random_rgb(),get_random_rgb()],"label": "kgCO2"}]
-
-            #print(result)
-
         return jsonify(result)
-    if month == 'last_3_months' and company != 0:
-        three_months = get_last_three_months_with_year()
-        company_totals = {}
-        for m in three_months:
-            t_year, t_month = m
-        
-            with app.app_context():
-                records = db.session.query(Company.name, Company.sector, Usage.energy, Usage.waste, Usage.fuel).join(Usage, Usage.company_id == Company.id).filter(Usage.month == t_month, Usage.year == t_year, Usage.company_id == company_id).all()
-                print("Three months data of one company")
-                print(t_month)
-                print(company_id)
-                #print(records)
 
-                for record in records:
-                    print(record)
-                    company, sector, energy, waste, fuel = record
-
-                    total_energy = total_energy + round(energy,2)
-                    total_waste = total_waste + round(waste,2)
-                    total_fuel = total_fuel + round(fuel,2)
-
-
-            result = [{"labels": ["Engery", "Fuel", "Waste"], "values": [total_energy, total_fuel, total_waste], "color": [get_random_rgb(),get_random_rgb(),get_random_rgb()],"label": "kgCO2"}]
-
-            #print(result)
-
-        return jsonify(result)
-    if month == 'last_6_months' and company != 0:
-        six_months = get_last_six_months_with_year()
-        company_totals = {}
-        for m in six_months:
-            t_year, t_month = m
-
-            with app.app_context():
-                records = db.session.query(Company.name, Company.sector, Usage.energy, Usage.waste, Usage.fuel).join(Usage, Usage.company_id == Company.id).filter(Usage.month == t_month, Usage.year == t_year, Usage.company_id == company_id).all()
-
-                for record in records:
-                    print(record)
-                    company, sector, energy, waste, fuel = record
-
-                    total_energy = total_energy + round(energy,2)
-                    total_waste = total_waste + round(waste,2)
-                    total_fuel = total_fuel + round(fuel,2)
-
-
-            result = [{"labels": ["Engery", "Fuel", "Waste"], "values": [total_energy, total_fuel, total_waste], "color": [get_random_rgb(),get_random_rgb(),get_random_rgb()],"label": "kgCO2"}]
-
-        return jsonify(result)
     
 #for last 6 months table data
 @app.route('/fetchCalcTableData', methods=['GET'])
@@ -575,6 +612,12 @@ def fetchCalcTableData():
 @app.route('/get_calc_table_data', methods=['GET'])
 def get_calc_table_data():
     return jsonify("Pass")
+
+#get last month
+def get_last_month_with_year():
+    today = datetime.today()
+    last_month = today - relativedelta(months=1)
+    return last_month.year, last_month.month
 
 
 #get last three months. months and years
