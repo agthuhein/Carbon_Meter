@@ -136,7 +136,7 @@ a{
         <span id="password-error" class="error-message"></span>
         
         <button type="submit">Register</button>
-        
+        <span class="error-message" id="aldy_exist">{{ error }}</span>
         <label style="text-align: center;">Already a user? <a href="/">Login User</a></label>
 
         
@@ -184,6 +184,14 @@ a{
     
         return isValid;
     }
+    const span_aldy_exist = document.getElementById("aldy_exist");
+    email_input.addEventListener("input", () =>{
+        if(email_input.value.trim() !== ""){
+            span_aldy_exist.textContent = '';
+            span_aldy_exist.style.pointerEvents='none';
+            
+        }
+    });
         </script>
 </body>
 </html>

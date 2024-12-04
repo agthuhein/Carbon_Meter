@@ -33,22 +33,49 @@ def index():
 
     return render_template('index.html')
 
+# @app.route('/register', methods=['GET', 'POST'])
+# def register():
+#     if request.method == 'POST':
+#         #handle request
+#         name = request.form['name']
+#         email = request.form['email']
+#         password = request.form['password']
+
+#         with app.app_context():
+#             new_user = User(name=name, email=email, password=password)
+#             db.session.add(new_user)
+#             db.session.commit()
+
+#         return redirect(url_for('index'))
+
+#     return render_template('register.html')
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        #handle request
+        # Handle request
         name = request.form['name']
         email = request.form['email']
         password = request.form['password']
 
-        with app.app_context():
+        # Check if email already exists in the database
+        existing_user = User.query.filter_by(email=email).first()
+
+        if existing_user:
+            # If user already exists, redirect to login page
+            #return redirect(url_for('login'))  # Make sure you have a 'login' route defined
+            return render_template('register.html', error='Your email is already registered. Please log in.')
+        else:
+            # Otherwise, create the new user and add to the database
             new_user = User(name=name, email=email, password=password)
             db.session.add(new_user)
             db.session.commit()
 
-        return redirect(url_for('index'))
+            # Redirect to the index page (or anywhere else)
+            return redirect(url_for('index'))
 
     return render_template('register.html')
+
 
 @app.route('/logout')
 def logout():

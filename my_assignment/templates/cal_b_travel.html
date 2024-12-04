@@ -195,12 +195,12 @@
     }
   
     if (b_travel === "" || isNaN(b_travel)) {
-      mBTError.textContent = "Please enter a valid electricity bill.";
+      mBTError.textContent = "Please enter a valid business travel (in km).";
       isValid = false;
     }
   
     if (fuel_eff === "" || isNaN(fuel_eff)) {
-      aFeError.textContent = "Please enter a valid gas bill.";        isValid = false;
+      aFeError.textContent = "Please enter a valid fuel efficiency.";        isValid = false;
     }
   return isValid;
   }
