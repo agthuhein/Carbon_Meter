@@ -31,7 +31,7 @@
         </select>
     </div>
     <div class="form-group col-md-1" style="margin-top: 40px;">
-        <button id="btnExport" class="btn btn-primary btn-md">Export</button>
+        <button id="btnExport" class="btn btn-primary btn-md" onclick="btn_export()">Export</button>
     </div>
 </div>
     
@@ -190,7 +190,7 @@ function populateTable(data){
             row.append('<td>' + item.energy.toFixed(2) + '</td>');
             row.append('<td>' + item.waste.toFixed(2) + '</td>');
             row.append('<td>' + item.fuel.toFixed(2) + '</td>');
-            row.append('<td>' + item.month + '</td>');
+            row.append('<td>' + getShortMonthName(item.month) + '</td>');
             row.append('<td>' + item.year + '</td>');
             tbody.append(row);
             
@@ -199,6 +199,14 @@ function populateTable(data){
 
         $('#datatablesSimple').DataTable();  // Initialize DataTable
         
+    }
+
+    function getShortMonthName(monthIndex) {
+        const months = [
+            'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+        ];
+        return months[monthIndex - 1] || 'Invalid month';
     }
 
     document.getElementById('btnExport').onclick = function() {
@@ -230,21 +238,23 @@ function populateTable(data){
             // Add table below charts
         doc.setFontSize(12);    
         doc.text("Table Data:", 10, 100);
-        const table = document.getElementById('datatablesSimple');
-        const rows = table.rows;
+
+        const table = $('#datatablesSimple').DataTable();
+        const allRowsData = table.rows().data().toArray();
+
         const data = [];
 
-        for(let i = 1; i< rows.length; i++){
-            const cells= rows[i].cells;
+        for(let i = 1; i< allRowsData.length; i++){
+            let row = allRowsData[i];
 
             const rowData = {
-                company: cells[0].innerText,
-                sector: cells[1].innerText,
-                energy: cells[2].innerText,
-                waste: cells[3].innerText,
-                travel: cells[4].innerText,
-                month: cells[5].innerText,
-                year: cells[6].innerText
+                company: row[0],
+                sector: row[1],
+                energy: row[2],
+                waste: row[3],
+                travel: row[4],
+                month: row[5],
+                year: row[6]
             }
             data.push(rowData);
         }
@@ -317,7 +327,7 @@ window.onload = function() {
         }
     });
 
-        // Bar Chart Example
+    // Bar Chart Example
     var ctx_b = document.getElementById("myBarChart").getContext('2d');
     myLineChart = new Chart(ctx_b, {
     type: 'bar',
@@ -332,38 +342,83 @@ window.onload = function() {
     },
     options: {
         scales: {
-        xAxes: [{
-            time: {
-            unit: 'month'
-            },
-            gridLines: {
-            display: false
-            },
-            ticks: {
-            maxTicksLimit: 5
-            }
-        }],
-        yAxes: [{
-            ticks: {
-            min: 0,
-            max: 100000,
-            maxTicksLimit: 10
-            },
-            gridLines: {
-            display: true
-            }
-        }],
+            xAxes: [{
+                time: {
+                    unit: 'month'
+                },
+                gridLines: {
+                    display: false
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: getXAxisLabel('companies') // Set your desired y-axis label text here
+                },
+                ticks: {
+                    maxTicksLimit: 5
+                }
+            }],
+            yAxes: [{
+                ticks: {
+                    min: 0,
+                    max: 100000,
+                    maxTicksLimit: 12
+                },
+                gridLines: {
+                    display: true
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'kgCO2 Emissions' // Set your desired y-axis label text here
+                }
+            }],
         },
         legend: {
-        display: false
+            display: false
         }
     }
+    // options: {
+    //     scales: {
+    //     xAxes: [{
+    //         time: {
+    //         unit: 'month'
+    //         },
+    //         gridLines: {
+    //         display: false
+    //         },
+    //         ticks: {
+    //         maxTicksLimit: 5
+    //         }
+    //     }],
+    //     yAxes: [{
+    //         ticks: {
+    //         min: 0,
+    //         max: 100000,
+    //         maxTicksLimit: 10
+    //         },
+    //         gridLines: {
+    //         display: true
+    //         }
+    //     }],
+    //     },
+    //     legend: {
+    //     display: false
+    //     }
+    // }
+    
     });
-
     fetchDataAndUpdateChart();
     fetchTableData();
     
     
+}
+function getXAxisLabel(option) {
+    // Return the label based on the selected option
+    if (option === 'companies') {
+        return 'Companies';
+    } else if (option === 'categories') {
+        return 'Categories';
+    }
+    return 'Time'; // Default label (can be customized further)
 }
 function fetchTableDataL3M() {
     fetch('/get_table_data_l3m', {
@@ -473,11 +528,22 @@ m_selectBox.addEventListener('change', (event) =>{
                 console.error('Error:', error); // Handle errors
             });
 });
+// Function to update the X-axis label dynamically
+function updateXAxisLabel(option) {
+    const newLabel = getXAxisLabel(option);
+    // Update the X-axis label for the Bar Chart
+    if (myLineChart) {
+        myLineChart.options.scales.xAxes[0].scaleLabel.labelString = newLabel;
+        myLineChart.update(); // Refresh the chart to reflect changes
+    }
+}
 ///Company selection
 const c_selectBox = document.getElementById('bt_company')
 c_selectBox.addEventListener('change', (event) =>{
     monthChange = document.getElementById("timeRangeSelect").value;
     company = document.getElementById("bt_company").value;
+    const selectedOption = event.target.value === "0" ? "companies" : "categories"; // Default "companies" if All companies is selected
+    updateXAxisLabel(selectedOption);  // Update the X-axis label based on selection
     fetch(`/get_calc_data?selected_Month=${encodeURIComponent(monthChange)}&company=${encodeURIComponent(company)}`, {
             method: 'GET',
             headers: {
@@ -554,8 +620,11 @@ function fetchCalcTableData() {
     });
 
 }
-document.getElementById("exportBtn").onclick = function() {
-            var table = document.getElementById("datatablesSimple");
+// document.getElementById("exportBtn").onclick = function() {
+            
+//         };
+function btn_export(){
+    var table = document.getElementById("datatablesSimple");
             var canvasElements = [myChart.canvas, myLineChart.canvas];
             var data = {
                 table: table.outerHTML,
@@ -580,7 +649,7 @@ document.getElementById("exportBtn").onclick = function() {
                   link.download = "dashboard_export.pdf";
                   link.click();
               });
-        };
+}
 </script>
 {% endblock %}
 
