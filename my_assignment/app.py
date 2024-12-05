@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, url_for, session, flash, jsonify, json, send_file
+from flask import Flask, request, render_template, redirect, url_for, session, flash, jsonify, send_file
 from model import db, app, User, Company, Energy, Waste, BusinessTravel, Usage
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
@@ -8,95 +8,95 @@ from reportlab.pdfgen import canvas
 from io import BytesIO
 from PIL import Image
 import base64
+import logging
 
+# Configure logging to log to a file
+logging.basicConfig(filename='app.log', level=logging.ERROR)
 
-
-###Views###
+###To Views###
+#Login Page
 @app.route('/', methods=['GET','POST'])
 def index():
     if request.method == 'POST':
+        try:
+            email = request.form['email']
+            password = request.form['password']
 
-        email = request.form['email']
-        password = request.form['password']
+            with app.app_context():
+                user = User.query.filter_by(email=email).first()
+            
+                if user and user.check_password(password):
+                    session['name'] = user.name
+                    session['email'] = user.email
+                    session['password'] = user.password
 
-        with app.app_context():
-            user = User.query.filter_by(email=email).first()
-        
-            if user and user.check_password(password):
-                session['name'] = user.name
-                session['email'] = user.email
-                session['password'] = user.password
-
-                return redirect(url_for('dashboard'))
-            else:
-                return render_template('index.html', error='Please check your email and password.')
+                    return redirect(url_for('dashboard'))
+                else:
+                    return render_template('index.html', error='Please check your email and password.')
+        except Exception as e:
+            app.logger.error(f"Error during login: {e}")
+            return render_template('index.html', error='An unexpected error occurred. Please try again.')
 
     return render_template('index.html')
 
-# @app.route('/register', methods=['GET', 'POST'])
-# def register():
-#     if request.method == 'POST':
-#         #handle request
-#         name = request.form['name']
-#         email = request.form['email']
-#         password = request.form['password']
-
-#         with app.app_context():
-#             new_user = User(name=name, email=email, password=password)
-#             db.session.add(new_user)
-#             db.session.commit()
-
-#         return redirect(url_for('index'))
-
-#     return render_template('register.html')
-
+#Register Page
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        # Handle request
-        name = request.form['name']
-        email = request.form['email']
-        password = request.form['password']
+        try:
+            # Handle request
+            name = request.form['name']
+            email = request.form['email']
+            password = request.form['password']
 
-        # Check if email already exists in the database
-        existing_user = User.query.filter_by(email=email).first()
+            # Check if email already exists in the database
+            existing_user = User.query.filter_by(email=email).first()
 
-        if existing_user:
-            # If user already exists, redirect to login page
-            #return redirect(url_for('login'))  # Make sure you have a 'login' route defined
-            return render_template('register.html', error='Your email is already registered. Please log in.')
-        else:
-            # Otherwise, create the new user and add to the database
-            new_user = User(name=name, email=email, password=password)
-            db.session.add(new_user)
-            db.session.commit()
+            if existing_user:
+                # If user already exists, show the error message on register page.
+                return render_template('register.html', error='Your email is already registered. Please log in.')
+            else:
+                # Otherwise, create the new user and add to the database
+                new_user = User(name=name, email=email, password=password)
+                db.session.add(new_user)
+                db.session.commit()
 
-            # Redirect to the index page (or anywhere else)
-            return redirect(url_for('index'))
+                # Redirect to the index page (or anywhere else)
+                return redirect(url_for('index'))
+        except Exception as e:
+            app.logger.error(f"Error during login: {e}")
+            return render_template('register.html', error='An unexpected error occurred. Please try again.')
 
     return render_template('register.html')
 
 
 @app.route('/logout')
 def logout():
-    session.pop('email', None)
-    session.pop('name', None)
-    session.pop('password', None)
-    session.pop('result', None)
-    return redirect(url_for('index'))
+    try:
+        session.pop('email', None)
+        session.pop('name', None)
+        session.pop('password', None)
+        session.pop('result', None)
+        return redirect(url_for('index'))
+    except Exception as e:
+        app.logger.error(f"Error during login: {e}")
+        return render_template('index.html', error='An unexpected error occurred. Please try again.')
 
 ###route company page
 @app.route('/company_list')
 def company_list():
-    if session['name']:
-        with app.app_context():
-            user = User.query.filter_by(email = session['email']).first()
+    try:
+        if session['name']:
+            with app.app_context():
+                user = User.query.filter_by(email = session['email']).first()
+                companies = Company.query.all()
         
-        with app.app_context():
-            companies = Company.query.all()
-            print(companies)
-    
-        return render_template('company_list.html', user=user, companies=companies)
+            return render_template('company_list.html', user=user, companies=companies)
+        else:
+            return redirect(url_for('index'))
+    except Exception as e:
+        app.logger.error(f"Error during company list retrieval: {e}")
+        return render_template('index.html', error='An unexpected error occurred. Please try again later.')
 
 ###route energy usage calculation page
 @app.route('/cal_energyusage', methods=['GET','POST'])
@@ -254,12 +254,6 @@ def cal_b_travel():
         travel = float(request.form['b_travel'])
         fuel = float(request.form['fuel_eff'])
         bTravel_result = float(request.form['resultFootPrint'])
-        print(month)
-        print(year)
-        print(company_id)
-        print(travel)
-        print(fuel)
-        print(bTravel_result)
 
         with app.app_context():
             usage_ID = 0

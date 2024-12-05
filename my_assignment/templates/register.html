@@ -138,10 +138,8 @@ a{
         <button type="submit">Register</button>
         <span class="error-message" id="aldy_exist">{{ error }}</span>
         <label style="text-align: center;">Already a user? <a href="/">Login User</a></label>
-
-        
-
     </form>
+
     <script>
         function validateForm() {
         const name = document.getElementById("v_name").value;
@@ -157,7 +155,6 @@ a{
         const passwordError = document.getElementById(
             "password-error"
         );
-        
         nameError.textContent = "";
         emailError.textContent = "";
         passwordError.textContent = "";
@@ -192,6 +189,6 @@ a{
             
         }
     });
-        </script>
+    </script>
 </body>
 </html>
