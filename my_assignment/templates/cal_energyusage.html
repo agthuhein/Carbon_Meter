@@ -107,7 +107,7 @@
                 </div>
                 </div>
               </div>   
-       
+              <span class="error-message" id="userError">{{ error }}</span>
       </div>
        
       </div>
@@ -155,10 +155,8 @@
             var gasBill = document.getElementById('gasBill').value;
             var fuelBill = document.getElementById('fuelBill').value;
 
-            // Calculate total carbon footprint (as an example, assuming simple conversion rates)
-            var totalCarbonFootprint = (electricityBill * 0.0005) + (gasBill * 0.0053) + (fuelBill * 2.32); // Placeholder formula
-
-            //var totalCarbonFootprint = (electricityBill * 12 * 0.0005) + (gasBill * 12 * 0.0053) + (fuelBill * 12 * 2.32);
+            // Calculate total carbon footprint
+            var totalCarbonFootprint = (electricityBill * 0.0005) + (gasBill * 0.0053) + (fuelBill * 2.32);
 
             // Display results
             document.getElementById('resultElectricity').textContent = "€ " + electricityBill;

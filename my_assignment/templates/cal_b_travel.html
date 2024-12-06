@@ -142,10 +142,8 @@
       var bTravel = document.getElementById('b_travel').value;
       var fEfficency = document.getElementById('fuel_eff').value;
 
-      // Calculate total carbon footprint (as an example, assuming simple conversion rates)
+      // Calculate total carbon footprint
       var b_travelResult = (bTravel) * (1 / fEfficency) * (2.31);
-
-      //var totalCarbonFootprint = (electricityBill * 0.0005) + (gasBill * 0.0053) + (fuelBill * 2.32); // Placeholder formula
 
             // Display results
       document.getElementById('result_bTravel').textContent = bTravel + " km";

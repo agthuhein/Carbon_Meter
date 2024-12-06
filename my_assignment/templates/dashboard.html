@@ -79,6 +79,7 @@
             <!-- Rows will be inserted here -->
         </tbody>
     </table>
+    <span class="error-message" id="userError">{{ error }}</span>
 </div>
 
 {% endblock %}
@@ -618,6 +619,15 @@ function btn_export(){
                   link.click();
               });
 }
+
+const span_userError = document.getElementById("userError");
+    email_input.addEventListener("input", () =>{
+        if(email_input.value.trim() !== ""){
+            span_userError.textContent = '';
+            span_userError.style.pointerEvents='none';
+            
+        }
+    });
 </script>
 {% endblock %}
 

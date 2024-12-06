@@ -143,7 +143,6 @@
       var gen_waste = document.getElementById('gen_waste').value;
       var rec_waste = document.getElementById('rec_waste').value;
 
-
       var wasteResult = (gen_waste * 0.57) - ((rec_waste * gen_waste) / 100);
 
       // Display results
@@ -229,8 +228,6 @@
     } else {
         rWasteError.style.display = 'none';
     }
-
-    // Return the final validation result (form will not submit if isValid is false)
   return isValid;
   }
 

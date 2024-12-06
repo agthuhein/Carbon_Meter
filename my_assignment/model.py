@@ -84,7 +84,6 @@ class Usage(db.Model):
         self.energy = energy
         self.waste = waste
         self.fuel = fuel
-        #self.result = result
         self.month = month
         self.year = year
         self.company_id = company_id
