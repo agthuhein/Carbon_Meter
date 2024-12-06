@@ -121,13 +121,15 @@
         <input type="hidden" id="hiddenField" name="resultFootPrint" value="">
       </div>
     </div>
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+    <div id="flash-message-container">
         {% for message in messages %}
-            <p class="flash-class-success">{{ message }}</p>
+            <p class="flash-class-success" id="flash-message">{{ message }}</p>
         {% endfor %}
-    {% endif %}
-    {% endwith %}
+    </div>
+{% endif %}
+{% endwith %}
 </div>
 
 </div>
@@ -141,10 +143,8 @@
       var gen_waste = document.getElementById('gen_waste').value;
       var rec_waste = document.getElementById('rec_waste').value;
 
-      // Calculate total carbon footprint (as an example, assuming simple conversion rates)
-      var wasteResult = (gen_waste * 0.57) - ((rec_waste * gen_waste) / 100); // Placeholder formula
 
-      //var totalCarbonFootprint = (electricityBill * 0.0005) + (gasBill * 0.0053) + (fuelBill * 2.32); // Placeholder formula
+      var wasteResult = (gen_waste * 0.57) - ((rec_waste * gen_waste) / 100);
 
       // Display results
       document.getElementById('resultGenWaste').textContent = gen_waste + " kg";
@@ -181,30 +181,70 @@
   
     let isValid = true;
   
-    if (w_month === "" || w_month === "Choose...") {
-      monthError.textContent = "Please select a month.";
-      isValid = false;
+   // Validate month
+   if (w_month === "" || w_month === "Choose...") {
+        monthError.textContent = "Please select a month.";
+        monthError.style.display = 'inline'; // Show the error
+        isValid = false;
+    } else {
+        monthError.style.display = 'none'; // Hide the error if valid
     }
-  
+
+    // Validate year
     if (w_year === "" || w_year === "Choose...") {
-      yearError.textContent = "Please select a year.";
-      isValid = false;
+        yearError.textContent = "Please select a year.";
+        yearError.style.display = 'inline';
+        isValid = false;
+    } else {
+        yearError.style.display = 'none';
     }
-  
+
+    // Validate company
     if (w_company === "" || w_company === "Choose...") {
-      companyError.textContent = "Please select a company.";
-      isValid = false;
+        companyError.textContent = "Please select a company.";
+        companyError.style.display = 'inline';
+        isValid = false;
+    } else {
+        companyError.style.display = 'none';
     }
-  
+
+    // Validate general waste
     if (gen_waste === "" || isNaN(gen_waste)) {
-      gWasteError.textContent = "Please enter a valid generated waste.";
-      isValid = false;
+        gWasteError.textContent = "Please enter a valid generated waste.";
+        gWasteError.style.display = 'inline';
+        isValid = false;
+    } else {
+        gWasteError.style.display = 'none';
     }
-  
+
+    // Validate recycled waste
     if (rec_waste === "" || isNaN(rec_waste)) {
-      rWasteError.textContent = "Please enter a valid recycled waste.";        isValid = false;
+        rWasteError.textContent = "Please enter a valid recycled waste.";
+        rWasteError.style.display = 'inline';
+        isValid = false;
+    } else if (Number(rec_waste) < 0 || Number(rec_waste) > 57) {
+        rWasteError.textContent = "The recycled waste value must be between 0 and 57.";
+        rWasteError.style.display = 'inline';
+        isValid = false;
+    } else {
+        rWasteError.style.display = 'none';
     }
+
+    // Return the final validation result (form will not submit if isValid is false)
   return isValid;
   }
+
+  // Wait for the document to be fully loaded
+  document.addEventListener("DOMContentLoaded", function() {
+  // Check if there is a flash message
+  var flashMessage = document.getElementById('flash-message');
+        
+  if (flashMessage) {
+    // Set a timeout to hide the flash message after 5 seconds
+    setTimeout(function() {
+    flashMessage.style.display = 'none';
+    }, 3000); // 5000 milliseconds = 5 seconds
+    }
+  });
 </script>
 {% endblock %}

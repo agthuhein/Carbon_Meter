@@ -123,9 +123,11 @@
     </div>
     {% with messages = get_flashed_messages() %}
     {% if messages %}
-        {% for message in messages %}
-            <p class="flash-class-success">{{ message }}</p>
-        {% endfor %}
+        <div id="flash-message-container">
+            {% for message in messages %}
+                <p class="flash-class-success" id="flash-message">{{ message }}</p>
+            {% endfor %}
+        </div>
     {% endif %}
     {% endwith %}
 </div>
@@ -204,5 +206,18 @@
     }
   return isValid;
   }
+
+   // Wait for the document to be fully loaded
+   document.addEventListener("DOMContentLoaded", function() {
+  // Check if there is a flash message
+  var flashMessage = document.getElementById('flash-message');
+        
+  if (flashMessage) {
+    // Set a timeout to hide the flash message after 5 seconds
+    setTimeout(function() {
+    flashMessage.style.display = 'none';
+    }, 3000); // 5000 milliseconds = 5 seconds
+    }
+  });
 </script>
 {% endblock %}

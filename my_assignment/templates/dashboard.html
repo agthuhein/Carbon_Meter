@@ -21,7 +21,7 @@
             <option value="last_3_months">Last 3 months</option>
             <option value="last_6_months">Last 6 months</option>
             <option value="last_9_months">Last 9 months</option>
-            <option value="last_year">Last year</option>
+            <option value="last_year">Last 12 months</option>
             </select>
     </div>
     <div class="form-group col-md-3" style="margin-top: 40px;">
@@ -51,7 +51,7 @@
     <div class="col-lg-6">
         <div class="card mb-4">
             <div class="card-header">
-                <i class="fas fa-chart-pie me-1"></i>
+                <i class="fas fa-chart-bar me-1"></i>
                 Bar Chart
             </div>
             <div class="card-body"><canvas id="myBarChart" width="100%" height="50"></canvas></div>
@@ -272,16 +272,16 @@ function populateTable(data){
             theme: 'plain',
             tableLineColor: [0,0,0],
             headStyles: {
-                fontStyle: 'bold',  // Make the header row text bold
-                fillColor: null,    // Remove background color from the header
-                textColor: null,    // Keep text color black (default)
+                fontStyle: 'bold',  
+                fillColor: null,    
+                textColor: null,    
             },
             styles: {
-                fillColor: null,    // Remove row background colors
-                textColor: null,    // Keep row text color black (default)
-                lineColor: null,    // No borders between cells
-                lineWidth: 0,       // No cell borders
-                halign: 'left',     // Align text to the left for all columns
+                fillColor: null,    
+                textColor: null,    
+                lineColor: null,    
+                lineWidth: 0,       
+                halign: 'left',     
             },
             // Callback to draw underlines (bottom border) for rows
             didDrawCell: function (data) {
@@ -365,7 +365,7 @@ window.onload = function() {
                 },
                 scaleLabel: {
                     display: true,
-                    labelString: 'kgCO2 Emissions' // Set your desired y-axis label text here
+                    labelString: 'kgCO2' // Set your desired y-axis label text here
                 }
             }],
         },
@@ -373,34 +373,6 @@ window.onload = function() {
             display: false
         }
     }
-    // options: {
-    //     scales: {
-    //     xAxes: [{
-    //         time: {
-    //         unit: 'month'
-    //         },
-    //         gridLines: {
-    //         display: false
-    //         },
-    //         ticks: {
-    //         maxTicksLimit: 5
-    //         }
-    //     }],
-    //     yAxes: [{
-    //         ticks: {
-    //         min: 0,
-    //         max: 100000,
-    //         maxTicksLimit: 10
-    //         },
-    //         gridLines: {
-    //         display: true
-    //         }
-    //     }],
-    //     },
-    //     legend: {
-    //     display: false
-    //     }
-    // }
     
     });
     fetchDataAndUpdateChart();
@@ -409,19 +381,18 @@ window.onload = function() {
     
 }
 function getXAxisLabel(option) {
-    // Return the label based on the selected option
     if (option === 'companies') {
         return 'Companies';
     } else if (option === 'categories') {
         return 'Categories';
     }
-    return 'Time'; // Default label (can be customized further)
+    return 'Time';
 }
 function fetchTableDataL3M() {
     fetch('/get_table_data_l3m', {
     method: 'GET',
     headers: {
-      'Content-Type': 'application/json', // Ensures the server knows you're expecting JSON
+      'Content-Type': 'application/json',
     },
   })
     .then((response) => {
@@ -429,12 +400,12 @@ function fetchTableDataL3M() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      return response.json(); // Parse the JSON data from the response
+      return response.json();
     })
     .then((data) => {
         //populateTable(data);
         console.log("Htwat Lar Table")
-        console.log(data); // Use the data as needed
+        console.log(data); 
         populateTable(data);
 
     })
