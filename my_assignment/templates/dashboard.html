@@ -85,6 +85,7 @@
 {% endblock %}
 
 {% block js %}
+
 <script>
 
 let myChart;
@@ -219,22 +220,22 @@ function populateTable(data){
 
         monthSelectedText = monthChange.options[monthChange.selectedIndex].text;
         companySelectedText = company.options[company.selectedIndex].text;
-        doc.setFont('helvetica'); 
-        doc.setFontSize(14);
+        doc.setFont("helvetica");  // Ensure the font is set before adjusting size
+        doc.setFontSize(10);
         doc.text(monthSelectedText + " for " + companySelectedText, 10, 10 );
 
         const pieChartImage = myChart.toBase64Image();
-        doc.setFontSize(12);
+        doc.setFontSize(8);
         doc.text("Pie Chart:", 10, 20);
-        doc.addImage(pieChartImage, 'PNG', 10, 20, 100, 60);  // Bar chart on the left
+        doc.addImage(pieChartImage, 'PNG', 10, 20, 100, 55);  // Bar chart on the left
 
         const barChartImage = myLineChart.toBase64Image();
-        doc.setFontSize(12);
+        doc.setFontSize(8);
         doc.text("Bar Chart:", 105, 20);
         doc.addImage(barChartImage, 'PNG', 105, 30, 85, 60);  // Pie chart on the right
 
             // Add table below charts
-        doc.setFontSize(12);    
+        doc.setFontSize(8);    
         doc.text("Table Data:", 10, 100);
 
         const table = $('#datatablesSimple').DataTable();
@@ -242,7 +243,7 @@ function populateTable(data){
 
         const data = [];
 
-        for(let i = 1; i< allRowsData.length; i++){
+        for(let i = 0; i< allRowsData.length; i++){
             let row = allRowsData[i];
 
             const rowData = {
@@ -265,6 +266,8 @@ function populateTable(data){
             item.month,
             item.year
         ]);
+        
+        var Y = 105;
 
         doc.autoTable({
             startY: 105,
@@ -273,11 +276,13 @@ function populateTable(data){
             theme: 'plain',
             tableLineColor: [0,0,0],
             headStyles: {
+                fontSize: 9,
                 fontStyle: 'bold',  
                 fillColor: null,    
                 textColor: null,    
             },
             styles: {
+                fontSize: 8,
                 fillColor: null,    
                 textColor: null,    
                 lineColor: null,    
@@ -287,15 +292,45 @@ function populateTable(data){
             // Callback to draw underlines (bottom border) for rows
             didDrawCell: function (data) {
                 // Add a black underline (bottom border) to each row (except the last one)
-                if (data.row.index !== tableData.length - 1) {
+                Y = data.cell.y + data.cell.height
+                //if (data.row.index !== tableData.length - 1) {
                 const y = data.cell.y + data.cell.height; // Bottom of the current row
                 doc.setDrawColor(0, 0, 0);  // Set the color to black
-                doc.setLineWidth(0.5);      // Set the line width for the underline
+                doc.setLineWidth(0.2);      // Set the line width for the underline
                 doc.line(data.cell.x, y, data.cell.x + data.cell.width, y); // Draw the line
-                }
+                //}
             }
         });
+            console.log(Y);
+            let intY = parseInt(Y) + 20;
 
+            // Define the three long text blocks
+            const text_1 = "Upgrading lighting systems to LEDs, improving insulation, and using energy-efficient appliances help minimize electricity consumption, reducing emissions by monthly.";
+            const text_2 = "Using more recycled materials instead of virgin resources reduces the need for extraction, transportation, and processing, which all contribute to emissions.";
+            const text_3 = "Moving towards an electric vehicle fleet for logistics and employee commuting could reduce direct CO2 emissions associated with transportation.";
+
+            // Split the text into multiple lines that fit within the max width
+            const textLines1 = doc.splitTextToSize(text_1, 150);
+            const textLines2 = doc.splitTextToSize(text_2, 140);
+            const textLines3 = doc.splitTextToSize(text_3, 165);
+
+            // Add the first block of text
+            doc.setFontSize(8);  
+            doc.setFont('helvetica', 'bold').text("Energy-efficient Equipment:", 10, intY);
+            doc.setFont('helvetica', 'normal').text(textLines1, 50, intY);
+            intY += textLines1.length + 10;  // Move the Y position down after the first block (10px per line)
+
+            // Add the second block of text
+            doc.setFontSize(8);  
+            doc.setFont('helvetica', 'bold').text("Recycled Materials in Production:", 10, intY);
+            doc.setFont('helvetica', 'normal').text(textLines2, 57, intY);
+            intY += textLines2.length + 10;  // Move the Y position down after the second block
+
+            // Add the third block of text
+            doc.setFontSize(8);  
+            doc.setFont('helvetica', 'bold').text("Electrifying Fleet:", 10, intY);
+            doc.setFont('helvetica', 'normal').text(textLines2, 35, intY);
+            intY += textLines3.length + 10;  
             // Save the PDF
             doc.save('CarbonMeterReport.pdf');
     }
