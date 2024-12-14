@@ -36,6 +36,10 @@ Clone the repository
 
     python app.py
 
+## Browse the application
+
+    127.0.0.1:5000
+
 # Let's get started
 ## Views
 ### Login page inputs
